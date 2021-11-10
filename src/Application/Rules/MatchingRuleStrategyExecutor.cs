@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Domain.Model;
 
 namespace Application.Rules
@@ -16,6 +17,10 @@ namespace Application.Rules
 
         public async Task<decimal> ExecuteAsync(MatchingStrategy strategy, Person first, Person second)
         {
+            Guard.Against.Null(strategy, nameof(strategy));
+            Guard.Against.Null(first, nameof(first));
+            Guard.Against.Null(second, nameof(second));
+
             NextMatchingRuleDelegate finalNext = (finalScore) =>
             {
                 return Task.FromResult(finalScore);

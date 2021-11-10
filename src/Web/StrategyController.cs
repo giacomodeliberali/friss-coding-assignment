@@ -25,6 +25,19 @@ namespace Web
             return Ok(guid);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(Guid id, [Required] UpdateStrategyDto input)
+        {
+            if (id != input.Id)
+            {
+                return BadRequest(new ArgumentException("Path id and body id do not match."));
+            }
+
+            await _strategyMatchApplicationService.UpdateStrategyAsync(input);
+
+            return Ok();
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {

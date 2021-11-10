@@ -22,6 +22,16 @@ namespace EntityFrameworkCore.Repositories
 
         public async Task<Guid> CreateAsync(MatchingStrategy strategy)
         {
+            await CreateStrategyInternal(strategy);
+            await CreateMatchingRulesInternal(strategy);
+
+            await _applicationDbContext.SaveChangesAsync();
+
+            return strategy.Id;
+        }
+
+        private async Task CreateStrategyInternal(MatchingStrategy strategy)
+        {
             var strategyData = new MatchingStrategyData()
             {
                 Id = strategy.Id,
@@ -29,6 +39,11 @@ namespace EntityFrameworkCore.Repositories
                 Description = strategy.Description,
             };
 
+            await _applicationDbContext.PersonMatchingStrategies.AddAsync(strategyData);
+        }
+
+        private async Task CreateMatchingRulesInternal(MatchingStrategy strategy)
+        {
             var rulesData = new List<MatchingRuleData>();
             var rulesParameterData = new List<MatchingRuleParameterData>();
 
@@ -64,23 +79,30 @@ namespace EntityFrameworkCore.Repositories
                 }
             }
 
-            await _applicationDbContext.PersonMatchingStrategies.AddAsync(strategyData);
             await _applicationDbContext.PersonMatchingRules.AddRangeAsync(rulesData);
             await _applicationDbContext.PersonMatchingRulesParameters.AddRangeAsync(rulesParameterData);
-
-            await _applicationDbContext.SaveChangesAsync();
-
-            return strategy.Id;
         }
 
-        public Task UpdateAsync(MatchingStrategy strategy)
+        public async Task UpdateAsync(MatchingStrategy strategy)
         {
-            throw new NotImplementedException();
+            // delete rules and parameters
+            var rulesData = await _applicationDbContext.PersonMatchingRules.Where(r => r.StrategyId == strategy.Id).ToListAsync();
+            var rulesIds = rulesData.Select(r => r.Id).ToList();
+            var parametersData =await _applicationDbContext.PersonMatchingRulesParameters.Where(p => rulesIds.Contains(p.RuleId)).ToListAsync();
+
+            _applicationDbContext.PersonMatchingRules.RemoveRange(rulesData);
+            _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(parametersData);
+
+            await CreateMatchingRulesInternal(strategy);
+
+            await _applicationDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(MatchingStrategy strategy)
         {
             _applicationDbContext.PersonMatchingStrategies.Remove(strategy.Snapshot);
+
+            // delete rules and parameters
             _applicationDbContext.PersonMatchingRules.RemoveRange(strategy.Rules.Select(r => r.Snapshot));
             _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(strategy.Rules.SelectMany(r => r.Parameters.Select(p => p.Snapshot)));
 

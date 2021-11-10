@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
+using Application.Exceptions;
 using Application.Rules;
 using Domain.Model;
 using Domain.Repositories;
@@ -42,7 +43,18 @@ namespace Application.Services
             var strategy = await _matchingStrategyRepository.GetByNameAsync("Default");
 
             var firstPerson = await _personRepository.GetByIdAsync(firstPersonId);
+
+            if (firstPerson is null)
+            {
+                throw new UserNotFoundException(firstPersonId);
+            }
+
             var secondPerson = await _personRepository.GetByIdAsync(secondPersonId);
+
+            if (secondPerson is null)
+            {
+                throw new UserNotFoundException(secondPersonId);
+            }
 
             var score = await _matchingRuleStrategyExecutor.ExecuteAsync(strategy, firstPerson, secondPerson);
 

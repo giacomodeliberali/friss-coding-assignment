@@ -6,7 +6,7 @@ using WriteModel;
 
 namespace Domain.Model
 {
-    public class MatchingStrategy : Entity
+    public class MatchingStrategy : AggregateRoot
     {
         public MatchingStrategyData Snapshot => _snapshot;
         private MatchingStrategyData _snapshot;
@@ -22,6 +22,17 @@ namespace Domain.Model
 
         private MatchingStrategy()
         {
+        }
+
+        public void Update(string name, string description, List<MatchingRule> rules)
+        {
+            Guard.Against.NullOrEmpty(name?.Trim(), nameof(name));
+            Guard.Against.NullOrEmpty(description?.Trim(), nameof(description));
+            Guard.Against.Null(rules, nameof(rules));
+
+            Name = name;
+            Description = description;
+            _rules = rules;
         }
 
         public class Factory

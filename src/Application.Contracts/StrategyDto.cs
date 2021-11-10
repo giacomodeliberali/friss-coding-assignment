@@ -21,6 +21,8 @@ namespace Application.Contracts
 
             public string Description { get; set; }
 
+            public bool IsEnabled { get; set; }
+
             public string RuleTypeAssemblyQualifiedName { get; set; }
 
             public IEnumerable<ParameterDto> Parameters { get; set; }

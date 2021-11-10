@@ -82,7 +82,8 @@ namespace Application.Services
                         Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
-                        RuleTypeAssemblyQualifiedName = r.GetType().FullName,
+                        IsEnabled = r.IsEnabled,
+                        RuleTypeAssemblyQualifiedName = r.RuleType.GetAssemblyQualifiedName(),
                         Parameters = r.Parameters.Select(p =>
                         {
                             return new StrategyDto.RuleDto.ParameterDto()
@@ -107,6 +108,39 @@ namespace Application.Services
             }
 
             await _strategyRepository.DeleteAsync(strategy);
+        }
+
+        public async Task UpdateStrategyAsync(UpdateStrategyDto input)
+        {
+            var strategy = await _strategyRepository.GetByIdAsync(input.Id);
+
+            var rules = new List<MatchingRule>();
+
+            foreach (var ruleDto in input.Rules.OrEmptyIfNull())
+            {
+                var parameters = new List<MatchingRuleParameter>();
+                foreach (var parameterDto in ruleDto.Parameters.OrEmptyIfNull())
+                {
+                    var parameter = MatchingRuleParameter.Factory.Create(parameterDto.Name, parameterDto.Value);
+                    parameters.Add(parameter);
+                }
+
+                var rule = MatchingRule.Factory.Create(
+                    ruleDto.RuleTypeAssemblyQualifiedName,
+                    ruleDto.Name,
+                    ruleDto.Description,
+                    ruleDto.IsEnabled,
+                    parameters);
+
+                rules.Add(rule);
+            }
+
+            strategy.Update(
+                input.Name,
+                input.Description,
+                rules);
+
+            await _strategyRepository.UpdateAsync(strategy);
         }
     }
 }
