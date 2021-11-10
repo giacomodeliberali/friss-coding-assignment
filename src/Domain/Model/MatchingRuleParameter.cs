@@ -1,9 +1,14 @@
 using System;
+using WriteModel;
 
 namespace Domain.Model
 {
     public class MatchingRuleParameter : Entity
     {
+        private PersonMatchingRuleParameterData _snapshot;
+
+        public PersonMatchingRuleParameterData Snapshot => _snapshot;
+
         public string Name { get; set; }
 
         public decimal Value { get; set; }
@@ -24,13 +29,14 @@ namespace Domain.Model
                 };
             }
 
-            public static MatchingRuleParameter FromSnapshot(Guid id, string name, decimal value)
+            public static MatchingRuleParameter FromSnapshot(PersonMatchingRuleParameterData snapshot)
             {
                 return new MatchingRuleParameter()
                 {
-                    Id = id,
-                    Name = name,
-                    Value = value,
+                    Id = snapshot.Id,
+                    Name = snapshot.Name,
+                    Value = snapshot.Value,
+                    _snapshot = snapshot,
                 };
             }
         }

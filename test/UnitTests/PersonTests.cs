@@ -1,6 +1,7 @@
 using System;
 using Domain.Model;
 using Shouldly;
+using WriteModel;
 using Xunit;
 
 namespace UnitTests
@@ -18,15 +19,13 @@ namespace UnitTests
                 DateTime.Parse("01-01-1996"),
                 " 12345 ");
 
-            var expected = Person.Factory.FromSnapshot(
-                sut.Id,
-                "Giacomo",
-                "De Liberali",
-                DateTime.Parse("01-01-1996"),
-                "12345");
-
             // Act & Assert
-            sut.ShouldBeEquivalentTo(expected);
+            sut.Id.ShouldNotBe(Guid.Empty);
+            sut.Snapshot.ShouldBeNull();
+            sut.FirstName.ShouldBe("Giacomo");
+            sut.LastName.ShouldBe("De Liberali");
+            sut.BirthDate.ShouldBe(DateTime.Parse("01-01-1996"));
+            sut.IdentificationNumber.ShouldBe("12345");
         }
 
         [Theory]
@@ -66,12 +65,14 @@ namespace UnitTests
         {
             // Arrange
             var guid = Guid.NewGuid();
-            var sut = Person.Factory.FromSnapshot(
-                guid,
-                "Giacomo",
-                "De Liberali",
-                DateTime.Parse("01-01-1996"),
-                "12345");
+            var sut = Person.Factory.FromSnapshot(new PersonData()
+            {
+                Id = guid,
+                FirstName = "Giacomo",
+                LastName = "De Liberali",
+                BirthDate = DateTime.Parse("01-01-1996"),
+                IdentificationNumber = "12345",
+            });
 
             // Act & Assert
             sut.Id.ShouldBe(guid);

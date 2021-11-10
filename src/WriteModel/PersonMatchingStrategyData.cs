@@ -1,4 +1,4 @@
-namespace EntityFrameworkCore.Entities
+namespace WriteModel
 {
     public class PersonMatchingStrategyData : EntityData
     {

@@ -1,11 +1,16 @@
 using System;
 using Ardalis.GuardClauses;
 using JetBrains.Annotations;
+using WriteModel;
 
 namespace Domain.Model
 {
     public class Person : Entity
     {
+        private PersonData _snapshot;
+
+        public PersonData Snapshot => _snapshot;
+
         [NotNull]
         public string FirstName { get; private set; }
 
@@ -42,20 +47,16 @@ namespace Domain.Model
                 };
             }
 
-            public static Person FromSnapshot(
-                Guid id,
-                string firstName,
-                string lastName,
-                DateTime? birthDate,
-                string identificationNumber)
+            public static Person FromSnapshot(PersonData snapshot)
             {
                 return new Person()
                 {
-                    Id = id,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    BirthDate = birthDate,
-                    IdentificationNumber = identificationNumber,
+                    Id = snapshot.Id,
+                    FirstName = snapshot.FirstName,
+                    LastName = snapshot.LastName,
+                    BirthDate = snapshot.BirthDate,
+                    IdentificationNumber = snapshot.IdentificationNumber,
+                    _snapshot = snapshot,
                 };
             }
         }

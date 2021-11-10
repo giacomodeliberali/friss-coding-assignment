@@ -1,6 +1,8 @@
+using System;
+using System.Linq;
+using Application.Rules;
 using Application.Services;
 using Domain;
-using Domain.Rules;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -12,9 +14,20 @@ namespace Application
             // This registration could be made automatically by combining assembly scanning and convention on the class names
             serviceCollection.AddTransient<IPersonApplicationService, PersonApplicationService>();
             serviceCollection.AddTransient<IPersonStrategyMatchApplicationService, PersonStrategyMatchApplicationService>();
+            serviceCollection.AddTransient<IPersonMatchingRuleStrategyExecutor, PersonMatchingRuleStrategyExecutor>();
 
-            // @GDL should it be used in startup or here?
-            serviceCollection.AddDomain();
+            // add rules
+            var ruleContributorType = typeof(IRuleContributor);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .AsParallel()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => !x.IsInterface && !x.IsAbstract)
+                .Where(x => ruleContributorType.IsAssignableFrom(x));
+
+            foreach (var type in types)
+            {
+                serviceCollection.AddTransient(type);
+            }
         }
     }
 }

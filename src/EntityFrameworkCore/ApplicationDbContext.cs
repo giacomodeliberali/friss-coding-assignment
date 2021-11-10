@@ -1,7 +1,7 @@
 using Domain.Model;
 using EntityFrameworkCore.Configurations;
-using EntityFrameworkCore.Entities;
 using Microsoft.EntityFrameworkCore;
+using WriteModel;
 
 namespace EntityFrameworkCore
 {

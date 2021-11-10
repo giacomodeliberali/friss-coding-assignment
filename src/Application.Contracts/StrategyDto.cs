@@ -11,7 +11,7 @@ namespace Application.Contracts
 
         public string Description { get; set; }
 
-        public List<RuleDto> Rules { get; set; }
+        public IEnumerable<RuleDto> Rules { get; set; }
 
         public class RuleDto
         {
@@ -23,7 +23,7 @@ namespace Application.Contracts
 
             public string RuleTypeAssemblyQualifiedName { get; set; }
 
-            public List<ParameterDto> Parameters { get; set; }
+            public IEnumerable<ParameterDto> Parameters { get; set; }
 
             public class ParameterDto
             {

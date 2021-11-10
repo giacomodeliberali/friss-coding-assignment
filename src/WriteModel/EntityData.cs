@@ -1,6 +1,6 @@
 using System;
 
-namespace EntityFrameworkCore.Entities
+namespace WriteModel
 {
     public abstract class EntityData
     {

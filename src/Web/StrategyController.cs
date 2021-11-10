@@ -21,8 +21,8 @@ namespace Web
         [HttpPost]
         public async Task<IActionResult> CreateAsync([Required] CreateStrategyDto input)
         {
-            await _personStrategyMatchApplicationService.CreateStrategy(input);
-            return Ok();
+            var guid = await _personStrategyMatchApplicationService.CreateStrategy(input);
+            return Ok(guid);
         }
 
         [HttpGet("{id}")]

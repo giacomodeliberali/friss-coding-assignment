@@ -8,7 +8,7 @@ namespace Application.Services
 {
     public interface IPersonStrategyMatchApplicationService
     {
-        Task CreateStrategy(CreateStrategyDto input);
+        Task<Guid> CreateStrategy(CreateStrategyDto input);
 
         Task<StrategyDto> GetByIdAsync(Guid strategyId);
 

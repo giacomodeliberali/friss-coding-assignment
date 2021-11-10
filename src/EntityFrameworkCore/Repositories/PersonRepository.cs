@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Model;
 using Domain.Repositories;
-using EntityFrameworkCore.Entities;
 using Microsoft.EntityFrameworkCore;
+using WriteModel;
 
 namespace EntityFrameworkCore.Repositories
 {
@@ -43,12 +43,7 @@ namespace EntityFrameworkCore.Repositories
                 return null;
             }
 
-            return Person.Factory.FromSnapshot(
-                personData.Id,
-                personData.FirstName,
-                personData.LastName,
-                personData.BirthDate,
-                personData.IdentificationNumber);
+            return Person.Factory.FromSnapshot(personData);
         }
     }
 }

@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using WriteModel;
 
 namespace Domain.Model
 {
     public class PersonMatchingStrategy : Entity
     {
+        public PersonMatchingStrategyData Snapshot => _snapshot;
+        private PersonMatchingStrategyData _snapshot;
+
         private List<PersonMatchingRule> _rules;
+
 
         public string Name { get; protected set; }
 
@@ -18,34 +23,6 @@ namespace Domain.Model
 
         private PersonMatchingStrategy()
         {
-        }
-
-        public async Task<decimal> Match(Person first, Person second)
-        {
-            PersonMatchingRuleDelegate finalNext = (finalScore) =>
-            {
-                // _logger.Debug($"Pipeline pre-processors terminata con pre-processor di default per Questionnaire '{questionnaire.Resource.Name}'");
-                return Task.FromResult(finalScore);
-            };
-
-            var rulesPipelines = Rules
-                .Reverse()
-                .Aggregate(
-                    finalNext,
-                    (next, currentRule) =>
-                    {
-                        return async (score) =>
-                        {
-                            if (currentRule.IsEnabled)
-                            {
-                                return await currentRule.Match(first, second, score, next);
-                            }
-
-                            return score;
-                        };
-                    });
-
-            return await rulesPipelines(0);
         }
 
         public class Factory
@@ -69,17 +46,20 @@ namespace Domain.Model
             }
 
             public static PersonMatchingStrategy FromSnapshot(
-                Guid id,
-                string name,
-                string description,
-                List<PersonMatchingRule> rules)
+                PersonMatchingStrategyData snapshot,
+                List<PersonMatchingRuleData> rulesSnapshot,
+                List<PersonMatchingRuleParameterData> parametersSnapshots)
             {
                 return new PersonMatchingStrategy()
                 {
-                    Id = id,
-                    Name = name,
-                    Description = description,
-                    _rules = rules,
+                    Id = snapshot.Id,
+                    Name = snapshot.Name,
+                    Description = snapshot.Description,
+                    _snapshot = snapshot,
+                    _rules = rulesSnapshot.Select(r =>
+                    {
+                        return PersonMatchingRule.Factory.FromSnapshot(r, parametersSnapshots.Where(p => p.RuleId == r.Id).ToList());
+                    }).ToList(),
                 };
             }
         }

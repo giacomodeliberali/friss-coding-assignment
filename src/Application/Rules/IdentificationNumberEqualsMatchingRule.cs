@@ -1,18 +1,23 @@
 using System.Threading.Tasks;
 using Domain.Model;
 
-namespace Domain.Rules
+namespace Application.Rules
 {
-    public class IdentificationNumberEqualsMatchingRule : PersonMatchingRule
+    public class IdentificationNumberEqualsMatchingRule : RuleContributor
     {
-        public override async Task<decimal> Match(Person first, Person second, decimal score, PersonMatchingRuleDelegate next)
+        public override async Task<decimal> MatchAsync(
+            PersonMatchingRule rule,
+            Person first,
+            Person second,
+            decimal currentScore,
+            PersonMatchingRuleDelegate next)
         {
             if (AreIdentificationNumbersPopulatedAndEqual(first.IdentificationNumber, second.IdentificationNumber))
             {
-                return 1;
+                return Match;
             }
 
-            return await next(score);
+            return await next(currentScore);
         }
 
         private bool AreIdentificationNumbersPopulatedAndEqual(string first, string second)

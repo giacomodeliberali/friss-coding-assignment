@@ -16,6 +16,8 @@ namespace Application.Contracts.Rules
 
             public string Description { get; init; }
 
+            public bool IsEnabled { get; set; }
+
             public string RuleTypeAssemblyQualifiedName { get; init; }
 
             public List<CreateRuleParameterDto> Parameters { get; init; }

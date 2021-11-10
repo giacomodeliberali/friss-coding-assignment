@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
+using Application.Rules;
 using Domain.Model;
 using Domain.Repositories;
-using Domain.Rules;
 
 namespace Application.Services
 {
@@ -13,13 +12,16 @@ namespace Application.Services
     {
         private readonly IPersonRepository _personRepository;
         private readonly IPersonMatchingStrategyRepository _personMatchingStrategyRepository;
+        private readonly IPersonMatchingRuleStrategyExecutor _matchingRuleStrategyExecutor;
 
         public PersonApplicationService(
             IPersonRepository personRepository,
-            IPersonMatchingStrategyRepository personMatchingStrategyRepository)
+            IPersonMatchingStrategyRepository personMatchingStrategyRepository,
+            IPersonMatchingRuleStrategyExecutor matchingRuleStrategyExecutor)
         {
             _personRepository = personRepository;
             _personMatchingStrategyRepository = personMatchingStrategyRepository;
+            _matchingRuleStrategyExecutor = matchingRuleStrategyExecutor;
         }
 
         public async Task<Guid> CreatePersonAsync(CreatePersonDto input)
@@ -42,7 +44,9 @@ namespace Application.Services
             var firstPerson = await _personRepository.GetByIdAsync(firstPersonId);
             var secondPerson = await _personRepository.GetByIdAsync(secondPersonId);
 
-            return await strategy.Match(firstPerson, secondPerson);
+            var score = await _matchingRuleStrategyExecutor.ExecuteAsync(strategy, firstPerson, secondPerson);
+
+            return score;
         }
     }
 }

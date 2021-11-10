@@ -6,39 +6,39 @@ using Application.Contracts;
 using Application.Contracts.Rules;
 using Domain.Model;
 using Domain.Repositories;
-using Domain.Rules;
+using Domain;
 
 namespace Application.Services
 {
     public class PersonStrategyMatchApplicationService : IPersonStrategyMatchApplicationService
     {
-        private readonly IPersonMatchingRuleFactory _personMatchingRuleFactory;
         private readonly IPersonMatchingStrategyRepository _strategyRepository;
 
         public PersonStrategyMatchApplicationService(
-            IPersonMatchingRuleFactory personMatchingRuleFactory,
             IPersonMatchingStrategyRepository strategyRepository)
         {
-            _personMatchingRuleFactory = personMatchingRuleFactory;
             _strategyRepository = strategyRepository;
         }
 
-        public async Task CreateStrategy(CreateStrategyDto input)
+        public async Task<Guid> CreateStrategy(CreateStrategyDto input)
         {
             var rules = new List<PersonMatchingRule>();
 
-            foreach (var ruleDto in input.Rules)
+            foreach (var ruleDto in input.Rules.OrEmptyIfNull())
             {
-                var rule = _personMatchingRuleFactory.GetInstance(
-                    ruleDto.RuleTypeAssemblyQualifiedName,
-                    ruleDto.Name,
-                    ruleDto.Description);
-
-                foreach (var parameterDto in ruleDto.Parameters ?? Enumerable.Empty<CreateStrategyDto.CreateRuleDto.CreateRuleParameterDto>())
+                var parameters = new List<MatchingRuleParameter>();
+                foreach (var parameterDto in ruleDto.Parameters.OrEmptyIfNull())
                 {
                     var parameter = MatchingRuleParameter.Factory.Create(parameterDto.Name, parameterDto.Value);
-                    rule.AddParameter(parameter);
+                    parameters.Add(parameter);
                 }
+
+                var rule = PersonMatchingRule.Factory.Create(
+                    ruleDto.RuleTypeAssemblyQualifiedName,
+                    ruleDto.Name,
+                    ruleDto.Description,
+                    ruleDto.IsEnabled,
+                    parameters);
 
                 rules.Add(rule);
             }
@@ -48,7 +48,16 @@ namespace Application.Services
                 input.Description,
                 rules);
 
+            var existingStrategy = await _strategyRepository.GetByNameAsync(input.Name);
+
+            if (existingStrategy != null)
+            {
+                throw new Exception($"Strategy with name '{strategy.Name}' already exists!");
+            }
+
             await _strategyRepository.CreateAsync(strategy);
+
+            return strategy.Id;
         }
 
         public async Task<StrategyDto> GetByIdAsync(Guid strategyId)
@@ -60,6 +69,7 @@ namespace Application.Services
                 return null;
             }
 
+            // we could use automapper
             return new StrategyDto()
             {
                 Id = strategy.Id,
@@ -81,9 +91,9 @@ namespace Application.Services
                                 Name = p.Name,
                                 Value = p.Value,
                             };
-                        }).ToList(),
+                        }),
                     };
-                }).ToList(),
+                }),
             };
         }
 

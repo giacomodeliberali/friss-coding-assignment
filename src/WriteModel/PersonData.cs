@@ -1,6 +1,6 @@
 using System;
 
-namespace EntityFrameworkCore.Entities
+namespace WriteModel
 {
     /// <summary>
     /// Represents the write model of the <see cref="Person"/> domain entity.

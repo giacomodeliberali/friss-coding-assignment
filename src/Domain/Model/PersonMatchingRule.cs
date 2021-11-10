@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using WriteModel;
 
 namespace Domain.Model
 {
-    public delegate Task<decimal> PersonMatchingRuleDelegate(decimal score);
-
-    public abstract class PersonMatchingRule : Entity
+    public class PersonMatchingRule : Entity
     {
+        public PersonMatchingRuleData Snapshot => _snapshot;
+
+        private PersonMatchingRuleData _snapshot;
+
         private List<MatchingRuleParameter> _parameters;
         public string Name { get; internal set; }
 
@@ -16,21 +18,11 @@ namespace Domain.Model
 
         public bool IsEnabled { get; protected set; }
 
+        public Type RuleType { get; private set; }
+
         public IReadOnlyCollection<MatchingRuleParameter> Parameters => _parameters;
 
-        internal PersonMatchingRule()
-        {
-            Id = Guid.NewGuid();
-            IsEnabled = true;
-            _parameters = new List<MatchingRuleParameter>();
-        }
-
-        public void AddParameter(MatchingRuleParameter parameter)
-        {
-            _parameters.Add(parameter);
-        }
-
-        protected decimal GetParameterOrDefault(string name, decimal defaultValue)
+        public decimal GetParameterOrDefault(string name, decimal defaultValue)
         {
             var parameter = Parameters.SingleOrDefault(p => p.Name == name);
 
@@ -42,6 +34,55 @@ namespace Domain.Model
             return defaultValue;
         }
 
-        public abstract Task<decimal> Match(Person first, Person second, decimal score, PersonMatchingRuleDelegate next);
+        public class Factory
+        {
+            public static PersonMatchingRule Create(
+                string ruleTypeAssemblyQualifiedName,
+                string name,
+                string description,
+                bool isEnabled,
+                List<MatchingRuleParameter> parameters)
+            {
+                var ruleType = Type.GetType(ruleTypeAssemblyQualifiedName);
+
+                if (ruleType is null)
+                {
+                    throw new ArgumentException("Invalid rule type");
+                }
+
+                return new PersonMatchingRule()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = name,
+                    Description = description,
+                    IsEnabled = isEnabled,
+                    _parameters = parameters,
+                    RuleType = ruleType,
+                };
+            }
+
+            public static PersonMatchingRule FromSnapshot(
+                PersonMatchingRuleData snapshot,
+                List<PersonMatchingRuleParameterData> parameters)
+            {
+                var ruleType = Type.GetType(snapshot.RuleTypeAssemblyQualifiedName);
+
+                if (ruleType is null)
+                {
+                    throw new ArgumentException("Invalid rule type");
+                }
+
+                return new PersonMatchingRule()
+                {
+                    Id = snapshot.Id,
+                    Name = snapshot.Name,
+                    Description = snapshot.Description,
+                    IsEnabled = snapshot.IsEnabled,
+                    RuleType = ruleType,
+                    _snapshot = snapshot,
+                    _parameters = parameters.Select(MatchingRuleParameter.Factory.FromSnapshot).ToList(),
+                };
+            }
+        }
     }
 }

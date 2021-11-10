@@ -1,12 +1,14 @@
 using System;
 
-namespace EntityFrameworkCore.Entities
+namespace WriteModel
 {
     public class PersonMatchingRuleData : EntityData
     {
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public bool IsEnabled { get; set; }
 
         public string RuleTypeAssemblyQualifiedName { get; set; }
 

@@ -2,25 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using Domain.Model;
 using Domain.Repositories;
-using Domain.Rules;
-using EntityFrameworkCore.Entities;
 using Microsoft.EntityFrameworkCore;
+using WriteModel;
 
 namespace EntityFrameworkCore.Repositories
 {
     public class PersonMatchingStrategyRepository : IPersonMatchingStrategyRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IPersonMatchingRuleFactory _personMatchingRuleFactory;
 
         public PersonMatchingStrategyRepository(
-            ApplicationDbContext applicationDbContext,
-            IPersonMatchingRuleFactory personMatchingRuleFactory)
+            ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
-            _personMatchingRuleFactory = personMatchingRuleFactory;
         }
 
         public async Task<Guid> CreateAsync(PersonMatchingStrategy strategy)
@@ -35,6 +32,7 @@ namespace EntityFrameworkCore.Repositories
             var rulesData = new List<PersonMatchingRuleData>();
             var rulesParameterData = new List<PersonMatchingRuleParameterData>();
 
+            var order = 10;
             foreach (var personMatchingRule in strategy.Rules)
             {
                 var ruleData = new PersonMatchingRuleData()
@@ -42,10 +40,13 @@ namespace EntityFrameworkCore.Repositories
                     Id = personMatchingRule.Id,
                     Name = personMatchingRule.Name,
                     Description = personMatchingRule.Description,
-                    Order = 0,
-                    RuleTypeAssemblyQualifiedName = personMatchingRule.GetType().AssemblyQualifiedName!,
+                    IsEnabled = personMatchingRule.IsEnabled,
+                    Order = order,
+                    RuleTypeAssemblyQualifiedName = personMatchingRule.RuleType.GetAssemblyQualifiedName(),
                     StrategyId = strategy.Id,
                 };
+
+                order += 10;
 
                 rulesData.Add(ruleData);
 
@@ -79,22 +80,9 @@ namespace EntityFrameworkCore.Repositories
 
         public async Task DeleteAsync(PersonMatchingStrategy strategy)
         {
-            var strategyData = await _applicationDbContext.PersonMatchingStrategies
-                .SingleAsync(s => s.Id == strategy.Id);
-
-            var rulesData = await _applicationDbContext.PersonMatchingRules
-                .Where(r => r.StrategyId == strategy.Id)
-                .ToListAsync();
-
-            var rulesId = rulesData.Select(r => r.Id).ToList();
-
-            var parametersData = await _applicationDbContext.PersonMatchingRulesParameters
-                .Where(p => rulesId.Contains(p.RuleId))
-                .ToListAsync();
-
-            _applicationDbContext.PersonMatchingStrategies.Remove(strategyData);
-            _applicationDbContext.PersonMatchingRules.RemoveRange(rulesData);
-            _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(parametersData);
+            _applicationDbContext.PersonMatchingStrategies.Remove(strategy.Snapshot);
+            _applicationDbContext.PersonMatchingRules.RemoveRange(strategy.Rules.Select(r => r.Snapshot));
+            _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(strategy.Rules.SelectMany(r => r.Parameters.Select(p => p.Snapshot)));
 
             await _applicationDbContext.SaveChangesAsync();
         }
@@ -119,24 +107,10 @@ namespace EntityFrameworkCore.Repositories
                 .Where(p => rulesId.Contains(p.RuleId))
                 .ToListAsync();
 
-            // @GDL todo refactor!!!
-
             var strategy = PersonMatchingStrategy.Factory.FromSnapshot(
-                strategyData.Id,
-                strategyData.Name,
-                strategyData.Description,
-                rulesData.Select(r =>
-                {
-                    var rule = _personMatchingRuleFactory.GetInstance(r.RuleTypeAssemblyQualifiedName, r.Name,
-                        r.Description, r.Id);
-
-                    foreach (var parameterData in parametersData.Where(p => p.RuleId == r.Id))
-                    {
-                        rule.AddParameter(MatchingRuleParameter.Factory.FromSnapshot(parameterData.Id, parameterData.Name, parameterData.Value));
-                    }
-
-                    return rule;
-                }).ToList());
+                strategyData,
+                rulesData,
+                parametersData);
 
             return strategy;
         }
