@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
@@ -23,6 +24,14 @@ namespace Web
         {
             var guid = await _personApplicationService.CreatePersonAsync(input);
             return Ok(guid);
+        }
+
+        [ProducesResponseType(typeof(IEnumerable<PersonDto>), 200)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var people = await _personApplicationService.GetPeople();
+            return Ok(people);
         }
 
         [HttpGet("probability-same-identity")]

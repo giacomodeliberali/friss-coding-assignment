@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
 using Application.Exceptions;
@@ -59,6 +61,19 @@ namespace Application.Services
             var score = await _matchingRuleStrategyExecutor.ExecuteAsync(strategy, firstPerson, secondPerson);
 
             return score;
+        }
+
+        public async Task<IEnumerable<PersonDto>> GetPeople()
+        {
+            var people = await _personRepository.GetAllAsync();
+            return people.Select(p => new PersonDto()
+            {
+                Id = p.Id,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                BirthDate = p.BirthDate,
+                IdentificationNumber = p.IdentificationNumber,
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
 
@@ -17,5 +18,7 @@ namespace Application.Services
         Task<Guid> CreatePersonAsync(CreatePersonDto input);
 
         Task<decimal> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId);
+
+        Task<IEnumerable<PersonDto>> GetPeople();
     }
 }

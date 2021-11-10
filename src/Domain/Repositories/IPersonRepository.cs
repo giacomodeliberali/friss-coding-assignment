@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Model;
 
@@ -18,5 +19,7 @@ namespace Domain.Repositories
         /// <param name="id">The id of the <see cref="Person"/> to retrieve</param>
         /// <returns>The <see cref="Person"/> or null</returns>
         Task<Person> GetByIdAsync(Guid id);
+
+        Task<List<Person>> GetAllAsync();
     }
 }

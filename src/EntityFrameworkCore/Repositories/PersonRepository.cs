@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Model;
@@ -44,6 +45,12 @@ namespace EntityFrameworkCore.Repositories
             }
 
             return Person.Factory.FromSnapshot(personData);
+        }
+
+        public async Task<List<Person>> GetAllAsync()
+        {
+            var peopleData = await _applicationDbContext.People.ToListAsync();
+            return peopleData.Select(Person.Factory.FromSnapshot).ToList();
         }
     }
 }
