@@ -1,6 +1,6 @@
 namespace WriteModel
 {
-    public class PersonMatchingStrategyData : EntityData
+    public class MatchingStrategyData : EntityData
     {
         public string Name { get; set; }
 

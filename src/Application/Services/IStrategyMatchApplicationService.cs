@@ -6,7 +6,7 @@ using Application.Contracts.Rules;
 
 namespace Application.Services
 {
-    public interface IPersonStrategyMatchApplicationService
+    public interface IStrategyMatchApplicationService
     {
         Task<Guid> CreateStrategy(CreateStrategyDto input);
 

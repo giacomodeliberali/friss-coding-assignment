@@ -8,6 +8,7 @@ namespace EntityFrameworkCore.Configurations
     {
         public void Configure(EntityTypeBuilder<PersonData> builder)
         {
+            builder.ToTable("People");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.FirstName).HasMaxLength(32).IsRequired();
             builder.Property(p => p.LastName).HasMaxLength(32).IsRequired();

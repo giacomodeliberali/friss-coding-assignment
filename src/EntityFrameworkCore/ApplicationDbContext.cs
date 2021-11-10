@@ -12,11 +12,11 @@ namespace EntityFrameworkCore
         /// </summary>
         public DbSet<PersonData> People { get; set; }
 
-        public DbSet<PersonMatchingStrategyData> PersonMatchingStrategies { get; set; }
+        public DbSet<MatchingStrategyData> PersonMatchingStrategies { get; set; }
 
-        public DbSet<PersonMatchingRuleData> PersonMatchingRules { get; set; }
+        public DbSet<MatchingRuleData> PersonMatchingRules { get; set; }
 
-        public DbSet<PersonMatchingRuleParameterData> PersonMatchingRulesParameters { get; set; }
+        public DbSet<MatchingRuleParameterData> PersonMatchingRulesParameters { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -29,9 +29,9 @@ namespace EntityFrameworkCore
 
             // Add custom configurations
             modelBuilder.ApplyConfiguration(new PersonConfiguration());
-            modelBuilder.ApplyConfiguration(new PersonMatchingStrategyConfiguration());
-            modelBuilder.ApplyConfiguration(new PersonMatchingRuleConfiguration());
-            modelBuilder.ApplyConfiguration(new PersonMatchingRuleParameterConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchingStrategyConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchingRuleConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchingRuleParameterConfiguration());
         }
     }
 }

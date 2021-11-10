@@ -6,12 +6,13 @@ namespace Application.Rules
 {
     public class BirthDateEqualsMatchingRule : RuleContributor
     {
+        /// <inheritdoc />
         public override async Task<decimal> MatchAsync(
-            PersonMatchingRule rule,
+            MatchingRule rule,
             Person first,
             Person second,
             decimal currentScore,
-            PersonMatchingRuleDelegate next)
+            NextMatchingRuleDelegate next)
         {
             if (AreBirthDatesPopulated(first.BirthDate, second.BirthDate))
             {

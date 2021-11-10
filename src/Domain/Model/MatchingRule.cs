@@ -5,11 +5,11 @@ using WriteModel;
 
 namespace Domain.Model
 {
-    public class PersonMatchingRule : Entity
+    public class MatchingRule : Entity
     {
-        public PersonMatchingRuleData Snapshot => _snapshot;
+        public MatchingRuleData Snapshot => _snapshot;
 
-        private PersonMatchingRuleData _snapshot;
+        private MatchingRuleData _snapshot;
 
         private List<MatchingRuleParameter> _parameters;
         public string Name { get; internal set; }
@@ -36,7 +36,7 @@ namespace Domain.Model
 
         public class Factory
         {
-            public static PersonMatchingRule Create(
+            public static MatchingRule Create(
                 string ruleTypeAssemblyQualifiedName,
                 string name,
                 string description,
@@ -50,7 +50,7 @@ namespace Domain.Model
                     throw new ArgumentException("Invalid rule type");
                 }
 
-                return new PersonMatchingRule()
+                return new MatchingRule()
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
@@ -61,9 +61,9 @@ namespace Domain.Model
                 };
             }
 
-            public static PersonMatchingRule FromSnapshot(
-                PersonMatchingRuleData snapshot,
-                List<PersonMatchingRuleParameterData> parameters)
+            public static MatchingRule FromSnapshot(
+                MatchingRuleData snapshot,
+                List<MatchingRuleParameterData> parameters)
             {
                 var ruleType = Type.GetType(snapshot.RuleTypeAssemblyQualifiedName);
 
@@ -72,7 +72,7 @@ namespace Domain.Model
                     throw new ArgumentException("Invalid rule type");
                 }
 
-                return new PersonMatchingRule()
+                return new MatchingRule()
                 {
                     Id = snapshot.Id,
                     Name = snapshot.Name,

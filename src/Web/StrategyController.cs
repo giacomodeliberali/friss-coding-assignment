@@ -11,24 +11,24 @@ namespace Web
     [Route("api/strategies")]
     public class StrategyController : ControllerBase
     {
-        private readonly IPersonStrategyMatchApplicationService _personStrategyMatchApplicationService;
+        private readonly IStrategyMatchApplicationService _strategyMatchApplicationService;
 
-        public StrategyController(IPersonStrategyMatchApplicationService personStrategyMatchApplicationService)
+        public StrategyController(IStrategyMatchApplicationService strategyMatchApplicationService)
         {
-            _personStrategyMatchApplicationService = personStrategyMatchApplicationService;
+            _strategyMatchApplicationService = strategyMatchApplicationService;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([Required] CreateStrategyDto input)
         {
-            var guid = await _personStrategyMatchApplicationService.CreateStrategy(input);
+            var guid = await _strategyMatchApplicationService.CreateStrategy(input);
             return Ok(guid);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var strategyDto = await _personStrategyMatchApplicationService.GetByIdAsync(id);
+            var strategyDto = await _strategyMatchApplicationService.GetByIdAsync(id);
 
             if (strategyDto == null)
             {
@@ -41,7 +41,7 @@ namespace Web
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteByIdAsync(Guid id)
         {
-            await _personStrategyMatchApplicationService.DeleteStrategy(id);
+            await _strategyMatchApplicationService.DeleteStrategy(id);
             return Ok();
         }
     }

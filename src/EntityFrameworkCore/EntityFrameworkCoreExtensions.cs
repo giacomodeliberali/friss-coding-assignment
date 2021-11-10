@@ -10,7 +10,7 @@ namespace EntityFrameworkCore
         {
             // This registrations could be made automatically by combining assembly scanning and convention on the class names
             serviceCollection.AddTransient<IPersonRepository, PersonRepository>();
-            serviceCollection.AddTransient<IPersonMatchingStrategyRepository, PersonMatchingStrategyRepository>();
+            serviceCollection.AddTransient<IMatchingStrategyRepository, MatchingStrategyRepository>();
         }
     }
 }

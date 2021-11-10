@@ -5,18 +5,18 @@ using Domain.Model;
 
 namespace Application.Rules
 {
-    public class PersonMatchingRuleStrategyExecutor : IPersonMatchingRuleStrategyExecutor
+    public class MatchingRuleStrategyExecutor : IMatchingRuleStrategyExecutor
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public PersonMatchingRuleStrategyExecutor(IServiceProvider serviceProvider)
+        public MatchingRuleStrategyExecutor(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<decimal> ExecuteAsync(PersonMatchingStrategy strategy, Person first, Person second)
+        public async Task<decimal> ExecuteAsync(MatchingStrategy strategy, Person first, Person second)
         {
-            PersonMatchingRuleDelegate finalNext = (finalScore) =>
+            NextMatchingRuleDelegate finalNext = (finalScore) =>
             {
                 return Task.FromResult(finalScore);
             };
@@ -35,7 +35,7 @@ namespace Application.Rules
 
                                 if (executor == null)
                                 {
-                                    throw new Exception("Wrong type!"); // GDL todo handle
+                                    throw new Exception($"Type '{currentRule.RuleType.FullName}' is not registered in the DI container!");
                                 }
 
                                 var newScore = await executor.MatchAsync(currentRule, first, second, score, next);

@@ -2,7 +2,7 @@ using System;
 
 namespace WriteModel
 {
-    public class PersonMatchingRuleParameterData : EntityData
+    public class MatchingRuleParameterData : EntityData
     {
         public string Name { get; set; }
 

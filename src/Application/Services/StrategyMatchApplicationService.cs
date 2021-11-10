@@ -10,19 +10,19 @@ using Domain;
 
 namespace Application.Services
 {
-    public class PersonStrategyMatchApplicationService : IPersonStrategyMatchApplicationService
+    public class StrategyMatchApplicationService : IStrategyMatchApplicationService
     {
-        private readonly IPersonMatchingStrategyRepository _strategyRepository;
+        private readonly IMatchingStrategyRepository _strategyRepository;
 
-        public PersonStrategyMatchApplicationService(
-            IPersonMatchingStrategyRepository strategyRepository)
+        public StrategyMatchApplicationService(
+            IMatchingStrategyRepository strategyRepository)
         {
             _strategyRepository = strategyRepository;
         }
 
         public async Task<Guid> CreateStrategy(CreateStrategyDto input)
         {
-            var rules = new List<PersonMatchingRule>();
+            var rules = new List<MatchingRule>();
 
             foreach (var ruleDto in input.Rules.OrEmptyIfNull())
             {
@@ -33,7 +33,7 @@ namespace Application.Services
                     parameters.Add(parameter);
                 }
 
-                var rule = PersonMatchingRule.Factory.Create(
+                var rule = MatchingRule.Factory.Create(
                     ruleDto.RuleTypeAssemblyQualifiedName,
                     ruleDto.Name,
                     ruleDto.Description,
@@ -43,7 +43,7 @@ namespace Application.Services
                 rules.Add(rule);
             }
 
-            var strategy = PersonMatchingStrategy.Factory.Create(
+            var strategy = MatchingStrategy.Factory.Create(
                 input.Name,
                 input.Description,
                 rules);

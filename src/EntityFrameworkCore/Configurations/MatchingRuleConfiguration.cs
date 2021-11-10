@@ -4,10 +4,11 @@ using WriteModel;
 
 namespace EntityFrameworkCore.Configurations
 {
-    public class PersonMatchingRuleConfiguration : IEntityTypeConfiguration<PersonMatchingRuleData>
+    public class MatchingRuleConfiguration : IEntityTypeConfiguration<MatchingRuleData>
     {
-        public void Configure(EntityTypeBuilder<PersonMatchingRuleData> builder)
+        public void Configure(EntityTypeBuilder<MatchingRuleData> builder)
         {
+            builder.ToTable("Rules.Rules");
             builder.HasKey(r => r.Id);
             builder.Property(r => r.Name).HasMaxLength(32).IsRequired();
             builder.Property(r => r.Description).HasMaxLength(256).IsRequired();

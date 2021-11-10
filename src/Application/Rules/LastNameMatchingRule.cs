@@ -3,17 +3,16 @@ using Domain.Model;
 
 namespace Application.Rules
 {
-
     public class LastNameMatchingRule : RuleContributor
     {
         public const string IncreaseScorePercentageParameterName = "IncreaseScorePercentage";
 
         public override async Task<decimal> MatchAsync(
-            PersonMatchingRule rule,
+            MatchingRule rule,
             Person first,
             Person second,
             decimal currentScore,
-            PersonMatchingRuleDelegate next)
+            NextMatchingRuleDelegate next)
         {
             if (first.LastName == second.LastName)
             {

@@ -5,12 +5,13 @@ namespace Application.Rules
 {
     public class IdentificationNumberEqualsMatchingRule : RuleContributor
     {
+        /// <inheritdoc />
         public override async Task<decimal> MatchAsync(
-            PersonMatchingRule rule,
+            MatchingRule rule,
             Person first,
             Person second,
             decimal currentScore,
-            PersonMatchingRuleDelegate next)
+            NextMatchingRuleDelegate next)
         {
             if (AreIdentificationNumbersPopulatedAndEqual(first.IdentificationNumber, second.IdentificationNumber))
             {

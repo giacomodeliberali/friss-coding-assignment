@@ -11,16 +11,16 @@ namespace Application.Services
     public class PersonApplicationService : IPersonApplicationService
     {
         private readonly IPersonRepository _personRepository;
-        private readonly IPersonMatchingStrategyRepository _personMatchingStrategyRepository;
-        private readonly IPersonMatchingRuleStrategyExecutor _matchingRuleStrategyExecutor;
+        private readonly IMatchingStrategyRepository _matchingStrategyRepository;
+        private readonly IMatchingRuleStrategyExecutor _matchingRuleStrategyExecutor;
 
         public PersonApplicationService(
             IPersonRepository personRepository,
-            IPersonMatchingStrategyRepository personMatchingStrategyRepository,
-            IPersonMatchingRuleStrategyExecutor matchingRuleStrategyExecutor)
+            IMatchingStrategyRepository matchingStrategyRepository,
+            IMatchingRuleStrategyExecutor matchingRuleStrategyExecutor)
         {
             _personRepository = personRepository;
-            _personMatchingStrategyRepository = personMatchingStrategyRepository;
+            _matchingStrategyRepository = matchingStrategyRepository;
             _matchingRuleStrategyExecutor = matchingRuleStrategyExecutor;
         }
 
@@ -39,7 +39,7 @@ namespace Application.Services
 
         public async Task<decimal> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId)
         {
-            var strategy = await _personMatchingStrategyRepository.GetByNameAsync("Default");
+            var strategy = await _matchingStrategyRepository.GetByNameAsync("Default");
 
             var firstPerson = await _personRepository.GetByIdAsync(firstPersonId);
             var secondPerson = await _personRepository.GetByIdAsync(secondPersonId);

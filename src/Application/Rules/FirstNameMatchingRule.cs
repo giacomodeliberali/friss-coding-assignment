@@ -11,12 +11,13 @@ namespace Application.Rules
         public const string IncreaseScorePercentageEqualsFirstNames = "IncreaseScorePercentageEqualsFirstNames";
         public const string IncreaseScorePercentageSimilarFirstNames = "IncreaseScorePercentageSimilarFirstNames";
 
+        /// <inheritdoc />
         public override async Task<decimal> MatchAsync(
-            PersonMatchingRule rule,
+            MatchingRule rule,
             Person first,
             Person second,
             decimal currentScore,
-            PersonMatchingRuleDelegate next)
+            NextMatchingRuleDelegate next)
         {
             if (first.FirstName == second.FirstName)
             {

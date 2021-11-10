@@ -5,9 +5,9 @@ namespace Domain.Model
 {
     public class MatchingRuleParameter : Entity
     {
-        private PersonMatchingRuleParameterData _snapshot;
+        private MatchingRuleParameterData _snapshot;
 
-        public PersonMatchingRuleParameterData Snapshot => _snapshot;
+        public MatchingRuleParameterData Snapshot => _snapshot;
 
         public string Name { get; set; }
 
@@ -29,7 +29,7 @@ namespace Domain.Model
                 };
             }
 
-            public static MatchingRuleParameter FromSnapshot(PersonMatchingRuleParameterData snapshot)
+            public static MatchingRuleParameter FromSnapshot(MatchingRuleParameterData snapshot)
             {
                 return new MatchingRuleParameter()
                 {

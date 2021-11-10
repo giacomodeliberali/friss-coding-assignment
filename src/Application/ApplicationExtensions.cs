@@ -13,8 +13,8 @@ namespace Application
         {
             // This registration could be made automatically by combining assembly scanning and convention on the class names
             serviceCollection.AddTransient<IPersonApplicationService, PersonApplicationService>();
-            serviceCollection.AddTransient<IPersonStrategyMatchApplicationService, PersonStrategyMatchApplicationService>();
-            serviceCollection.AddTransient<IPersonMatchingRuleStrategyExecutor, PersonMatchingRuleStrategyExecutor>();
+            serviceCollection.AddTransient<IStrategyMatchApplicationService, StrategyMatchApplicationService>();
+            serviceCollection.AddTransient<IMatchingRuleStrategyExecutor, MatchingRuleStrategyExecutor>();
 
             // add rules
             var ruleContributorType = typeof(IRuleContributor);

@@ -1,42 +1,41 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using WriteModel;
 
 namespace Domain.Model
 {
-    public class PersonMatchingStrategy : Entity
+    public class MatchingStrategy : Entity
     {
-        public PersonMatchingStrategyData Snapshot => _snapshot;
-        private PersonMatchingStrategyData _snapshot;
+        public MatchingStrategyData Snapshot => _snapshot;
+        private MatchingStrategyData _snapshot;
 
-        private List<PersonMatchingRule> _rules;
+        private List<MatchingRule> _rules;
 
 
         public string Name { get; protected set; }
 
         public string Description { get; protected set; }
 
-        public IReadOnlyCollection<PersonMatchingRule> Rules => _rules;
+        public IReadOnlyCollection<MatchingRule> Rules => _rules;
 
-        private PersonMatchingStrategy()
+        private MatchingStrategy()
         {
         }
 
         public class Factory
         {
-            public static PersonMatchingStrategy Create(
+            public static MatchingStrategy Create(
                 string name,
                 string description,
-                List<PersonMatchingRule> rules)
+                List<MatchingRule> rules)
             {
                 Guard.Against.NullOrEmpty(name, nameof(name));
                 Guard.Against.NullOrEmpty(description, nameof(description));
                 Guard.Against.Null(rules, nameof(rules)); // does a strategy without rules make sense?
 
-                return new PersonMatchingStrategy()
+                return new MatchingStrategy()
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
@@ -45,12 +44,12 @@ namespace Domain.Model
                 };
             }
 
-            public static PersonMatchingStrategy FromSnapshot(
-                PersonMatchingStrategyData snapshot,
-                List<PersonMatchingRuleData> rulesSnapshot,
-                List<PersonMatchingRuleParameterData> parametersSnapshots)
+            public static MatchingStrategy FromSnapshot(
+                MatchingStrategyData snapshot,
+                List<MatchingRuleData> rulesSnapshot,
+                List<MatchingRuleParameterData> parametersSnapshots)
             {
-                return new PersonMatchingStrategy()
+                return new MatchingStrategy()
                 {
                     Id = snapshot.Id,
                     Name = snapshot.Name,
@@ -58,7 +57,7 @@ namespace Domain.Model
                     _snapshot = snapshot,
                     _rules = rulesSnapshot.Select(r =>
                     {
-                        return PersonMatchingRule.Factory.FromSnapshot(r, parametersSnapshots.Where(p => p.RuleId == r.Id).ToList());
+                        return MatchingRule.Factory.FromSnapshot(r, parametersSnapshots.Where(p => p.RuleId == r.Id).ToList());
                     }).ToList(),
                 };
             }
