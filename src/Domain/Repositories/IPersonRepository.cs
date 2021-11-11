@@ -5,6 +5,9 @@ using Domain.Model;
 
 namespace Domain.Repositories
 {
+    /// <summary>
+    /// The repository for the <see cref="Person"/>.
+    /// </summary>
     public interface IPersonRepository
     {
         /// <summary>
@@ -20,6 +23,11 @@ namespace Domain.Repositories
         /// <returns>The <see cref="Person"/> or null</returns>
         Task<Person> GetByIdAsync(Guid id);
 
+        /// <summary>
+        /// Get all the registered people.
+        /// Note: this should be moved in a QueryService.
+        /// </summary>
+        /// <returns>The list of people.</returns>
         Task<List<Person>> GetAllAsync();
     }
 }

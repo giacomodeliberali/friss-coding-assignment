@@ -1,17 +1,24 @@
 using System;
 using System.Threading.Tasks;
 using Domain.Model;
+using Domain.Rules;
 
 namespace Application.Rules
 {
-    public class BirthDateEqualsMatchingRule : RuleContributor
+    /// <summary>
+    /// This rule add 40% if birth dates match or interrupt the pipeline if both birth dates are known and different.
+    /// </summary>
+    [RuleParameter(IncreaseProbabilityWhenBirthDateMatches, "The probability to add when birthdates match.")]
+    public class BirthDateEqualsMatchingRule : IRuleContributor
     {
+        private const string IncreaseProbabilityWhenBirthDateMatches = nameof(IncreaseProbabilityWhenBirthDateMatches);
+
         /// <inheritdoc />
-        public override async Task<decimal> MatchAsync(
+        public async Task<decimal> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentScore,
+            decimal currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (AreBirthDatesPopulated(first.BirthDate, second.BirthDate))
@@ -19,13 +26,14 @@ namespace Application.Rules
                 // do not consider time when comparing dates
                 if (first.BirthDate!.Value.Date == second.BirthDate!.Value.Date)
                 {
-                    return await next(currentScore + 0.4m);
+                    var increaseProbabilityWhenBirthDatesMatch = rule.GetParameterOrDefault(IncreaseProbabilityWhenBirthDateMatches, defaultValue: 0.4m);
+                    return await next(currentProbability + increaseProbabilityWhenBirthDatesMatch);
                 }
 
-                return NoMatch;
+                return MatchingProbabilityConstants.NoMatch;
             }
 
-            return await next(currentScore);
+            return await next(currentProbability);
         }
 
         private bool AreBirthDatesPopulated(DateTime? first, DateTime? second)

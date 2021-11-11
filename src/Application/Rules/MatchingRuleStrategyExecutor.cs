@@ -1,25 +1,33 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+using Application.Exceptions;
+using Domain.Extensions;
 using Domain.Model;
+using Domain.Rules;
 
 namespace Application.Rules
 {
+    /// <inheritdoc />
     public class MatchingRuleStrategyExecutor : IMatchingRuleStrategyExecutor
     {
         private readonly IServiceProvider _serviceProvider;
 
+        /// <summary>
+        /// Creates the executor.
+        /// </summary>
+        /// <param name="serviceProvider">The DI container for resolving the rule types.</param>
         public MatchingRuleStrategyExecutor(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
+        /// <inheritdoc />
         public async Task<decimal> ExecuteAsync(MatchingStrategy strategy, Person first, Person second)
         {
-            Guard.Against.Null(strategy, nameof(strategy));
-            Guard.Against.Null(first, nameof(first));
-            Guard.Against.Null(second, nameof(second));
+            strategy.ThrowIfNull(nameof(strategy));
+            first.ThrowIfNull(nameof(first));
+            second.ThrowIfNull(nameof(second));
 
             NextMatchingRuleDelegate finalNext = (finalScore) =>
             {
@@ -32,23 +40,29 @@ namespace Application.Rules
                     finalNext,
                     (next, currentRule) =>
                     {
-                        return async (score) =>
+                        return async (probability) =>
                         {
+                            if (probability >= MatchingProbabilityConstants.Match)
+                            {
+                                // interrupt the pipeline and return 100% match
+                                return MatchingProbabilityConstants.Match;
+                            }
+
                             if (currentRule.IsEnabled)
                             {
                                 var executor = (IRuleContributor)_serviceProvider.GetService(currentRule.RuleType);
 
-                                if (executor == null)
+                                if (executor is null)
                                 {
-                                    throw new Exception($"Type '{currentRule.RuleType.FullName}' is not registered in the DI container!");
+                                    throw new MatchingRuleNotRegisteredInDiContainer(currentRule.RuleType.FullName);
                                 }
 
-                                var newScore = await executor.MatchAsync(currentRule, first, second, score, next);
+                                var newProbability = await executor.MatchAsync(currentRule, first, second, probability, next);
 
-                                return newScore;
+                                return newProbability;
                             }
 
-                            return await next(score);
+                            return await next(probability);
                         };
                     });
 

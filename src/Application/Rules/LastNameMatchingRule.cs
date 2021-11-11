@@ -1,26 +1,32 @@
 using System.Threading.Tasks;
 using Domain.Model;
+using Domain.Rules;
 
 namespace Application.Rules
 {
-    public class LastNameMatchingRule : RuleContributor
+    /// <summary>
+    /// This rule add 40% if the last names match.
+    /// </summary>
+    [RuleParameter(IncreaseProbabilityWhenEqualsLastNames, "The probability to add for a last name exact match.")]
+    public class LastNameMatchingRule : IRuleContributor
     {
-        public const string IncreaseScorePercentageParameterName = "IncreaseScorePercentage";
+        private const string IncreaseProbabilityWhenEqualsLastNames = nameof(IncreaseProbabilityWhenEqualsLastNames);
 
-        public override async Task<decimal> MatchAsync(
+        /// <inheritdoc />
+        public async Task<decimal> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentScore,
+            decimal currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (first.LastName == second.LastName)
             {
-                var increaseScorePercentage = rule.GetParameterOrDefault(IncreaseScorePercentageParameterName, defaultValue: 0.4m);
-                return await next(currentScore + increaseScorePercentage);
+                var increaseProbabilityWhenEqualsLastNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenEqualsLastNames, defaultValue: 0.4m);
+                return await next(currentProbability + increaseProbabilityWhenEqualsLastNames);
             }
 
-            return await next(currentScore);
+            return await next(currentProbability);
         }
     }
 }

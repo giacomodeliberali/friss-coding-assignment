@@ -1,7 +1,15 @@
+using System;
+using System.IO;
+using System.Net;
+using System.Reflection;
 using Application;
+using Application.Contracts;
+using Domain.Exceptions;
 using EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +35,13 @@ namespace Web.Host
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.Host", Version = "v1" });
+                c.CustomSchemaIds(t => t.FullName);
+
+                var path = Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory)!);
+                foreach (var filePath in Directory.GetFiles(path, "*.xml"))
+                {
+                    c.IncludeXmlComments(filePath);
+                }
             });
 
             services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(IWebAssemblyMarker).Assembly));
@@ -54,6 +69,28 @@ namespace Web.Host
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web.Host v1");
                 });
             }
+
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+                    context.Response.StatusCode = exceptionHandlerPathFeature?.Error switch
+                    {
+                        ValidationException => (int) HttpStatusCode.BadRequest,
+                        BusinessException => (int) HttpStatusCode.InternalServerError,
+                        _ => context.Response.StatusCode
+                    };
+
+                    await context.Response.WriteAsJsonAsync(new ExceptionDto
+                    {
+                        Name = exceptionHandlerPathFeature?.Error.GetType().Name,
+                        StackTrace = env.IsDevelopment() ? exceptionHandlerPathFeature?.Error.StackTrace : null,
+                        Message = exceptionHandlerPathFeature?.Error.Message
+                    });
+                });
+            });
 
             app.UseHttpsRedirection();
 

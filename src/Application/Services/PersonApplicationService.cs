@@ -7,6 +7,7 @@ using Application.Exceptions;
 using Application.Rules;
 using Domain.Model;
 using Domain.Repositories;
+using Domain.Rules;
 
 namespace Application.Services
 {
@@ -17,6 +18,9 @@ namespace Application.Services
         private readonly IMatchingStrategyRepository _matchingStrategyRepository;
         private readonly IMatchingRuleStrategyExecutor _matchingRuleStrategyExecutor;
 
+        /// <summary>
+        /// Creates the application service.
+        /// </summary>
         public PersonApplicationService(
             IPersonRepository personRepository,
             IMatchingStrategyRepository matchingStrategyRepository,
@@ -27,7 +31,8 @@ namespace Application.Services
             _matchingRuleStrategyExecutor = matchingRuleStrategyExecutor;
         }
 
-        public async Task<Guid> CreatePersonAsync(CreatePersonDto input)
+        /// <inheritdoc />
+        public async Task<CreatePersonReplyDto> CreatePersonAsync(CreatePersonDto input)
         {
             var person = Person.Factory.Create(
                 input.FirstName,
@@ -37,32 +42,42 @@ namespace Application.Services
 
             await _personRepository.CreateAsync(person);
 
-            return person.Id;
+            return new CreatePersonReplyDto()
+            {
+                Id = person.Id,
+            };
         }
 
-        public async Task<decimal> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId)
+        /// <inheritdoc />
+        public async Task<decimal> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId, string strategyName)
         {
-            var strategy = await _matchingStrategyRepository.GetByNameAsync("Default");
+            var strategy = await _matchingStrategyRepository.GetByNameAsync(strategyName ?? "Default");
+
+            if (strategy is null)
+            {
+                throw new StrategyNotFoundException(strategyName);
+            }
 
             var firstPerson = await _personRepository.GetByIdAsync(firstPersonId);
 
             if (firstPerson is null)
             {
-                throw new UserNotFoundException(firstPersonId);
+                throw new PersonNotFoundException(firstPersonId);
             }
 
             var secondPerson = await _personRepository.GetByIdAsync(secondPersonId);
 
             if (secondPerson is null)
             {
-                throw new UserNotFoundException(secondPersonId);
+                throw new PersonNotFoundException(secondPersonId);
             }
 
-            var score = await _matchingRuleStrategyExecutor.ExecuteAsync(strategy, firstPerson, secondPerson);
+            var probabilitySameIdentity = await _matchingRuleStrategyExecutor.ExecuteAsync(strategy, firstPerson, secondPerson);
 
-            return score;
+            return probabilitySameIdentity;
         }
 
+        /// <inheritdoc />
         public async Task<IEnumerable<PersonDto>> GetPeople()
         {
             var people = await _personRepository.GetAllAsync();

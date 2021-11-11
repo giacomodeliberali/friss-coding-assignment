@@ -1,24 +1,28 @@
 using System.Threading.Tasks;
 using Domain.Model;
+using Domain.Rules;
 
 namespace Application.Rules
 {
-    public class IdentificationNumberEqualsMatchingRule : RuleContributor
+    /// <summary>
+    /// This rule interrupts the pipeline and return 100% if business identifiers are known and equal.
+    /// </summary>
+    public class IdentificationNumberEqualsMatchingRule : IRuleContributor
     {
         /// <inheritdoc />
-        public override async Task<decimal> MatchAsync(
+        public async Task<decimal> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentScore,
+            decimal currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (AreIdentificationNumbersPopulatedAndEqual(first.IdentificationNumber, second.IdentificationNumber))
             {
-                return Match;
+                return MatchingProbabilityConstants.Match;
             }
 
-            return await next(currentScore);
+            return await next(currentProbability);
         }
 
         private bool AreIdentificationNumbersPopulatedAndEqual(string first, string second)

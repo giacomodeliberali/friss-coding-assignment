@@ -2,36 +2,42 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Model;
+using Domain.Rules;
 
 namespace Application.Rules
 {
-
-    public class FirstNameMatchingRule : RuleContributor
+    /// <summary>
+    /// This rule add 20% if the first names match or 15% if they are similar.
+    /// </summary>
+    [RuleParameter(IncreaseProbabilityWhenEqualsFirstNames, "The probability to add for a first name exact match.")]
+    [RuleParameter(IncreaseProbabilityWhenSimilarFirstNames, "The probability to add for a first name similarity match.")]
+    public class FirstNameMatchingRule : IRuleContributor
     {
-        public const string IncreaseScorePercentageEqualsFirstNames = "IncreaseScorePercentageEqualsFirstNames";
-        public const string IncreaseScorePercentageSimilarFirstNames = "IncreaseScorePercentageSimilarFirstNames";
+        // Parameters names
+        private const string IncreaseProbabilityWhenEqualsFirstNames = nameof(IncreaseProbabilityWhenEqualsFirstNames);
+        private const string IncreaseProbabilityWhenSimilarFirstNames = nameof(IncreaseProbabilityWhenSimilarFirstNames);
 
         /// <inheritdoc />
-        public override async Task<decimal> MatchAsync(
+        public async Task<decimal> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentScore,
+            decimal currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (first.FirstName == second.FirstName)
             {
-                var increaseScorePercentage = rule.GetParameterOrDefault(IncreaseScorePercentageEqualsFirstNames, defaultValue: 0.2m);
-                return await next(currentScore + increaseScorePercentage);
+                var increaseScorePercentage = rule.GetParameterOrDefault(IncreaseProbabilityWhenEqualsFirstNames, defaultValue: 0.2m);
+                return await next(currentProbability + increaseScorePercentage);
             }
 
             if (AreSimilar(first.FirstName, second.FirstName))
             {
-                var increaseScorePercentageSimilarFirstNames = rule.GetParameterOrDefault(IncreaseScorePercentageSimilarFirstNames, defaultValue: 0.15m);
-                return await next(currentScore + increaseScorePercentageSimilarFirstNames);
+                var increaseScorePercentageSimilarFirstNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenSimilarFirstNames, defaultValue: 0.15m);
+                return await next(currentProbability + increaseScorePercentageSimilarFirstNames);
             }
 
-            return await next(currentScore);
+            return await next(currentProbability);
         }
 
         private bool AreSimilar(string first, string second)

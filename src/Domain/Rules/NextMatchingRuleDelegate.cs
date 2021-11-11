@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Application.Rules
+namespace Domain.Rules
 {
     /// <summary>
     /// Represents the function that a MatchingRule will be executing when invoked.

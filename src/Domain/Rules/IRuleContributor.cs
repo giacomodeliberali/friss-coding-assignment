@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Model;
 
-namespace Application.Rules
+namespace Domain.Rules
 {
+    /// <summary>
+    /// Defines the logic that will be invoked when the given MatchingRule is executed.
+    /// </summary>
     public interface IRuleContributor
     {
         /// <summary>
@@ -14,9 +18,9 @@ namespace Application.Rules
         /// <param name="rule">The rule that could contain parameters.</param>
         /// <param name="first">The first person to compare.</param>
         /// <param name="second">The second person to be compared with.</param>
-        /// <param name="currentScore">The score calculated in the pipeline up to this point.</param>
+        /// <param name="currentProbability">The score calculated in the pipeline up to this point.</param>
         /// <param name="next">The delegate to the next rule in the pipeline. Invoke it to continue the pipeline or return a value to terminate it.</param>
         /// <returns></returns>
-        Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentScore, NextMatchingRuleDelegate next);
+        Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentProbability, NextMatchingRuleDelegate next);
     }
 }
