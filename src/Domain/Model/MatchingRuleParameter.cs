@@ -1,4 +1,5 @@
 using System;
+using Domain.Exceptions;
 using WriteModel;
 
 namespace Domain.Model
@@ -44,6 +45,16 @@ namespace Domain.Model
             /// <returns>The <see cref="MatchingRuleParameter"/>.</returns>
             public static MatchingRuleParameter Create(string name, decimal value)
             {
+                if (value > 1m)
+                {
+                    throw new ValidationException($"Value '{value}' cannot be greater than 1");
+                }
+
+                if (value < -1m)
+                {
+                    throw new ValidationException($"Value '{value}' cannot be less than -1");
+                }
+
                 return new MatchingRuleParameter()
                 {
                     Id = Guid.NewGuid(),

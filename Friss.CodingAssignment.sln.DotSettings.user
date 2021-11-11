@@ -2,5 +2,8 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=46bbc451_002Daeea_002D4e75_002Db30a_002D94a52ceeddbc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="T001_Should_CreateAPerson_AndHandleWhiteSpacesProperly" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.PersonTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingStrategyTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingRuleTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingRuleParameterTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

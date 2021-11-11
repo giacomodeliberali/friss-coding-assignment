@@ -10,9 +10,9 @@ namespace Domain.Exceptions
         /// <summary>
         /// Creates the exception.
         /// </summary>
-        /// <param name="message">The message.</param>
-        public ValidationException(string message)
-        : base(message)
+        /// <param name="parameterName">The message.</param>
+        public ValidationException(string parameterName)
+        : base(parameterName)
         {
         }
     }

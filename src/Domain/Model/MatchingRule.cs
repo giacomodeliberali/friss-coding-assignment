@@ -55,6 +55,10 @@ namespace Domain.Model
 
         private List<MatchingRuleParameter> _parameters;
 
+        private MatchingRule()
+        {
+        }
+
         /// <summary>
         /// Returns parameter with the given name if it exists, or it returns the provided fallback value.
         /// </summary>
@@ -99,11 +103,24 @@ namespace Domain.Model
                 ruleTypeAssemblyQualifiedName.ThrowIfNullOrEmpty(nameof(ruleTypeAssemblyQualifiedName));
                 name.ThrowIfNullOrEmpty(nameof(name));
                 description.ThrowIfNullOrEmpty(nameof(description));
-                parameters.ThrowIfNullOrEmpty(nameof(parameters));
+                parameters.ThrowIfNull(nameof(parameters));
 
                 if (!MatchingRuleExtensions.TryResolveRuleType(ruleTypeAssemblyQualifiedName, out var ruleType))
                 {
                     throw new InvalidRuleTypeException(ruleTypeAssemblyQualifiedName);
+                }
+
+                var validRuleParameterNames = ruleType
+                    .GetCustomAttributes(typeof(RuleParameterAttribute), inherit: true)
+                    .Select(t => ((RuleParameterAttribute)t).ParameterName)
+                    .ToList();
+
+                foreach (var parameter in parameters)
+                {
+                    if (!validRuleParameterNames.Contains(parameter.Name))
+                    {
+                        throw new InvalidParameterException(parameter.Name, ruleType.GetAssemblyQualifiedName());
+                    }
                 }
 
                 return new MatchingRule()

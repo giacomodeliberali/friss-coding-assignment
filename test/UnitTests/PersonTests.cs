@@ -1,4 +1,5 @@
 using System;
+using Domain.Exceptions;
 using Domain.Model;
 using Shouldly;
 using WriteModel;
@@ -34,7 +35,7 @@ namespace UnitTests
         public void ShouldNot_AllowEmptyOrNullValuesForFirstName(string firstName)
         {
             // Arrange, Act & Assert
-            Should.Throw<ArgumentException>(() =>
+            Should.Throw<ValidationException>(() =>
             {
                 var sut = Person.Factory.Create(
                     firstName,
@@ -50,7 +51,7 @@ namespace UnitTests
         public void ShouldNot_AllowEmptyOrNullValuesForLastName(string lastName)
         {
             // Arrange, Act & Assert
-            Should.Throw<ArgumentException>(() =>
+            Should.Throw<ValidationException>(() =>
             {
                 var sut = Person.Factory.Create(
                     "Giacomo",

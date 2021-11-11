@@ -1,7 +1,6 @@
 using System;
-using Domain.Rules;
 
-namespace Application.Rules
+namespace Domain.Rules
 {
     /// <summary>
     /// Allows to specify the parameters that a rule permits.
