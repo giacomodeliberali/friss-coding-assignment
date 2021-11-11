@@ -101,9 +101,7 @@ namespace Domain.Model
                 description.ThrowIfNullOrEmpty(nameof(description));
                 parameters.ThrowIfNullOrEmpty(nameof(parameters));
 
-                var ruleType = Type.GetType(ruleTypeAssemblyQualifiedName);
-
-                if (ruleType is null || typeof(IRuleContributor).IsAssignableFrom(ruleType))
+                if (!MatchingRuleExtensions.TryResolveRuleType(ruleTypeAssemblyQualifiedName, out var ruleType))
                 {
                     throw new InvalidRuleTypeException(ruleTypeAssemblyQualifiedName);
                 }
@@ -130,9 +128,7 @@ namespace Domain.Model
                 MatchingRuleData snapshot,
                 List<MatchingRuleParameterData> parameters)
             {
-                var ruleType = Type.GetType(snapshot.RuleTypeAssemblyQualifiedName);
-
-                if (ruleType is null || typeof(IRuleContributor).IsAssignableFrom(ruleType))
+                if (!MatchingRuleExtensions.TryResolveRuleType(snapshot.RuleTypeAssemblyQualifiedName, out var ruleType))
                 {
                     throw new InvalidRuleTypeException(snapshot.RuleTypeAssemblyQualifiedName);
                 }
