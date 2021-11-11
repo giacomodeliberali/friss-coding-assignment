@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
+using Domain.Exceptions;
 using Domain.Model;
 
 namespace Application.Services
@@ -12,10 +13,11 @@ namespace Application.Services
     public interface IPersonApplicationService
     {
         /// <summary>
-        /// Creates a new <see cref="Person"/> and returns its id. If the operation fails an exception is thrown.
+        /// Creates a new <see cref="Person"/> and returns its id.
         /// </summary>
         /// <param name="input">The person to be created.</param>
         /// <returns>The created person's id.</returns>
+        /// <exception cref="ValidationException">When input parameters are invalid.</exception>
         Task<CreatePersonReplyDto> CreatePersonAsync(CreatePersonDto input);
 
         /// <summary>

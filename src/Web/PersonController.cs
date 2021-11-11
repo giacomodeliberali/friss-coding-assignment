@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 using Application.Contracts;
 using Application.Contracts.Person;
 using Application.Services;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using ValidationException = Domain.Exceptions.ValidationException;
 
 namespace Web
 {
@@ -14,16 +18,21 @@ namespace Web
     /// Manages the CRUD operations on the Person entity and exposes
     /// the method to calculate the probability that two people are the same.
     /// </summary>
-    [ApiController]
     [Route("api/people")]
-    public class PersonController : ControllerBase
+    public class PersonController : CustomBaseController
     {
         private readonly IPersonApplicationService _personApplicationService;
+        private readonly ILogger<PersonController> _logger;
 
         /// <inheritdoc />
-        public PersonController(IPersonApplicationService personApplicationService)
+        public PersonController(
+            IHostingEnvironment hostingEnvironment,
+            IPersonApplicationService personApplicationService,
+            ILogger<PersonController> logger)
+            : base(hostingEnvironment)
         {
             _personApplicationService = personApplicationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -33,12 +42,19 @@ namespace Web
         /// <returns>The created person's id.</returns>
         [ProducesResponseType(typeof(CreatePersonReplyDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public async Task<IActionResult> CreateAsync([Required] CreatePersonDto input)
         {
-            var result = await _personApplicationService.CreatePersonAsync(input);
-            return Created(string.Empty, result);
+            try
+            {
+                var result = await _personApplicationService.CreatePersonAsync(input);
+                return Created(string.Empty, result);
+            }
+            catch (ValidationException validationException)
+            {
+                _logger.LogDebug(validationException, "Invalid request parameters");
+                return BadRequest(validationException);
+            }
         }
 
         /// <summary>
@@ -46,7 +62,6 @@ namespace Web
         /// </summary>
         /// <returns>The list of people.</returns>
         [ProducesResponseType(typeof(IEnumerable<PersonDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -71,8 +86,20 @@ namespace Web
             [Required] Guid secondPersonId,
             string strategyName = "Default")
         {
-            var score = await _personApplicationService.CalculateProbabilitySameIdentity(firstPersonId, secondPersonId, strategyName);
-            return Ok(score);
+            try
+            {
+                var probabilitySameIdentity = await _personApplicationService.CalculateProbabilitySameIdentity(
+                    firstPersonId,
+                    secondPersonId,
+                    strategyName);
+
+                return Ok(probabilitySameIdentity);
+            }
+            catch (BusinessException businessException)
+            {
+                _logger.LogInformation(businessException, "Error during probability calculation pipeline");
+                return ServerError(businessException);
+            }
         }
     }
 }

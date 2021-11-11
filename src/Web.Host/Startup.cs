@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using Application;
 using Application.Contracts;
 using Domain.Exceptions;
@@ -16,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace Web.Host
 {
@@ -70,10 +70,13 @@ namespace Web.Host
                 });
             }
 
+            app.UseSerilogRequestLogging();
+
             app.UseExceptionHandler(errorApp =>
             {
                 errorApp.Run(async context =>
                 {
+                    // all unhandled exception will be serialized as ExceptionDto
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
                     context.Response.StatusCode = exceptionHandlerPathFeature?.Error switch

@@ -5,6 +5,7 @@ using Application.Exceptions;
 using Domain.Extensions;
 using Domain.Model;
 using Domain.Rules;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Rules
 {
@@ -12,14 +13,17 @@ namespace Application.Rules
     public class MatchingRuleStrategyExecutor : IMatchingRuleStrategyExecutor
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<MatchingRuleStrategyExecutor> _logger;
 
         /// <summary>
         /// Creates the executor.
         /// </summary>
-        /// <param name="serviceProvider">The DI container for resolving the rule types.</param>
-        public MatchingRuleStrategyExecutor(IServiceProvider serviceProvider)
+        public MatchingRuleStrategyExecutor(
+            IServiceProvider serviceProvider,
+            ILogger<MatchingRuleStrategyExecutor> logger)
         {
             _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         /// <inheritdoc />
@@ -31,6 +35,7 @@ namespace Application.Rules
 
             NextMatchingRuleDelegate finalNext = (finalScore) =>
             {
+                _logger.LogDebug("Pipeline terminated all the rules");
                 return Task.FromResult(finalScore);
             };
 
@@ -42,9 +47,12 @@ namespace Application.Rules
                     {
                         return async (probability) =>
                         {
+                            _logger.LogDebug("Executing rule {Rule} with type {RuleType}. Current probability = {Probability}", currentRule.Name, currentRule.RuleType.GetAssemblyQualifiedName(), probability);
+
                             if (probability >= MatchingProbabilityConstants.Match)
                             {
                                 // interrupt the pipeline and return 100% match
+                                _logger.LogDebug("Probability {Probability} >= 100%, exiting pipeline", probability);
                                 return MatchingProbabilityConstants.Match;
                             }
 
@@ -57,17 +65,21 @@ namespace Application.Rules
                                     throw new MatchingRuleNotRegisteredInDiContainer(currentRule.RuleType.FullName);
                                 }
 
-                                var newProbability = await executor.MatchAsync(currentRule, first, second, probability, next);
-
-                                return newProbability;
+                                return await executor.MatchAsync(currentRule, first, second, probability, next);
                             }
 
                             return await next(probability);
                         };
                     });
 
+            _logger.LogDebug("Start pipeline for strategy {StrategyName} comparing {FirstPersonId} and {SecondPersonId}", strategy.Name, first.Id, second.Id);
+
             var initialScore = 0m;
-            return await rulesPipelines(initialScore);
+            var finalProbability =  await rulesPipelines(initialScore);
+
+            _logger.LogDebug("End pipeline with probability {FinalProbability}", finalProbability);
+
+            return finalProbability;
         }
     }
 }

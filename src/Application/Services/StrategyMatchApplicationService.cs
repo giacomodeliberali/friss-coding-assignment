@@ -129,6 +129,13 @@ namespace Application.Services
         {
             var strategy = await _strategyRepository.GetByIdAsync(input.Id);
 
+            var existingStrategy = await _strategyRepository.GetByNameAsync(input.Name);
+
+            if (existingStrategy is not null && existingStrategy.Id != strategy.Id)
+            {
+                throw new StrategyAlreadyExistsException(existingStrategy.Name);
+            }
+
             var rules = new List<MatchingRule>();
 
             foreach (var ruleDto in input.Rules.OrEmptyIfNull())
