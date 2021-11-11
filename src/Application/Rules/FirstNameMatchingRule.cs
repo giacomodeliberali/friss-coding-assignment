@@ -13,9 +13,15 @@ namespace Application.Rules
     [RuleParameter(IncreaseProbabilityWhenSimilarFirstNames, "The probability to add for a first name similarity match.")]
     public class FirstNameMatchingRule : IRuleContributor
     {
-        // Parameters names
-        private const string IncreaseProbabilityWhenEqualsFirstNames = nameof(IncreaseProbabilityWhenEqualsFirstNames);
-        private const string IncreaseProbabilityWhenSimilarFirstNames = nameof(IncreaseProbabilityWhenSimilarFirstNames);
+        /// <summary>
+        /// The name of the parameter to adjust the probability to add for a first name exact match.
+        /// </summary>
+        public const string IncreaseProbabilityWhenEqualsFirstNames = nameof(IncreaseProbabilityWhenEqualsFirstNames);
+
+        /// <summary>
+        /// The name of the parameter to adjust the probability to add for a first name similarity match.
+        /// </summary>
+        public const string IncreaseProbabilityWhenSimilarFirstNames = nameof(IncreaseProbabilityWhenSimilarFirstNames);
 
         /// <inheritdoc />
         public async Task<decimal> MatchAsync(
@@ -47,11 +53,6 @@ namespace Application.Rules
                 return true;
             }
 
-            if (DiffersForSingleTypo(first, second))
-            {
-                return true;
-            }
-
             if (AreDiminutive(first, second))
             {
                 return true;
@@ -66,13 +67,6 @@ namespace Application.Rules
             var levenshteinDistance = LevenshteinDistance(first, second);
 
             return levenshteinDistance <= 3;
-        }
-
-        private bool DiffersForSingleTypo(string first, string second)
-        {
-            var levenshteinDistance = LevenshteinDistance(first, second);
-
-            return levenshteinDistance == 1;
         }
 
         private bool HaveSameInitials(string firstName, string firstName2)

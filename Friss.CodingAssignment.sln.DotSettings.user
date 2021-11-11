@@ -7,5 +7,10 @@
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingRuleParameterTest&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.IdentificationNumberEqualsMatchingRuleTest.ShouldReturn_1_WhenIdentifiersMatch&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.IdentificationNumberEqualsMatchingRuleTest.ShouldCallNext_When_IdentifierDoNotMatch&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_20_WhenFirstNamesMatch_UsingDefaultParameters&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_15_WhenFirstNamesAreSimilar_UsingDefaultParameters&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_WhenFirstNamesMatch_UsingProvidedParameters&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_UsingDefaultParameters_WhenFirstNamesAreSimilar&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -41,7 +41,7 @@ namespace UnitTests.Rules
                 identificationNumber);
 
             var rule = MatchingRule.Factory.Create(
-                typeof(IdentificationNumberEqualsMatchingRule).GetAssemblyQualifiedName(),
+                _sut.GetType().GetAssemblyQualifiedName(),
                 "name",
                 "description",
                 isEnabled: true,
@@ -72,7 +72,7 @@ namespace UnitTests.Rules
                 "54321");
 
             var rule = MatchingRule.Factory.Create(
-                typeof(IdentificationNumberEqualsMatchingRule).GetAssemblyQualifiedName(),
+                _sut.GetType().GetAssemblyQualifiedName(),
                 "name",
                 "description",
                 isEnabled: true,
