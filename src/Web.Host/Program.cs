@@ -1,16 +1,20 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
+using Application.Seed;
+using Application.Services;
+using EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
 
 namespace Web.Host
 {
     public class Program
     {
-        public static int Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -24,14 +28,25 @@ namespace Web.Host
 
             try
             {
+                var hostBuilder = CreateHostBuilder(args).Build();
+
+                // seed database
+                // Note: wrong approach here, because if you run the app in multiple instance you end up with concurrency problems or duplicated migrations.
+                // We should seed inside migrations applied prior to app start.
+                using var scope = hostBuilder.Services.CreateScope();
+                var applicationDbContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                await applicationDbContext!.Database.EnsureCreatedAsync();
+                foreach (var dataSeedContributor in scope.ServiceProvider.GetServices<IDataSeedContributor>())
+                {
+                    await dataSeedContributor.SeedAsync();
+                }
+
                 Log.Information("Starting web host");
-                CreateHostBuilder(args).Build().Run();
-                return 0;
+                await hostBuilder.RunAsync();
             }
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Host terminated unexpectedly");
-                return 1;
             }
             finally
             {
@@ -39,7 +54,7 @@ namespace Web.Host
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>

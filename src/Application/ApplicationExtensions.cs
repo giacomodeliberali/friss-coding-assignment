@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Application.Rules;
+using Application.Seed;
 using Application.Services;
 using Domain;
 using Domain.Rules;
@@ -25,6 +26,7 @@ namespace Application
             serviceCollection.AddTransient<IMatchingRuleStrategyExecutor, MatchingRuleStrategyExecutor>();
 
            serviceCollection.AddRuleTypes();
+           serviceCollection.AddDataSeedContributors();
         }
 
         private static void AddRuleTypes(this IServiceCollection serviceCollection)
@@ -40,6 +42,12 @@ namespace Application
             {
                 serviceCollection.AddTransient(type);
             }
+        }
+
+        private static void AddDataSeedContributors(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddTransient<IDataSeedContributor, DefaultStrategySeed>();
+            serviceCollection.AddTransient<IDataSeedContributor, DemoUsersSeed>();
         }
     }
 }

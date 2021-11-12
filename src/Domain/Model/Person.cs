@@ -61,12 +61,38 @@ namespace Domain.Model
                 DateTime? birthDate,
                 string identificationNumber)
             {
+                return Create(
+                    Guid.NewGuid(),
+                    firstName,
+                    lastName,
+                    birthDate,
+                    identificationNumber);
+            }
+
+            /// <summary>
+            /// Creates a new validated instances of <see cref="Person"/> using the specified id.
+            /// </summary>
+            /// <param name="id">The id to use.</param>
+            /// <param name="firstName">The first name.</param>
+            /// <param name="lastName">The last name.</param>
+            /// <param name="birthDate">The birth date.</param>
+            /// <param name="identificationNumber">The business identification number.</param>
+            /// <exception cref="ValidationException">When parameters are invalid.</exception>
+            /// <returns>A new validated instances of <see cref="Person"/>.</returns>
+            /// <returns></returns>
+            public static Person Create(
+                Guid id,
+                string firstName,
+                string lastName,
+                DateTime? birthDate,
+                string identificationNumber)
+            {
                 firstName.ThrowIfNullOrEmpty(nameof(firstName));
                 lastName.ThrowIfNullOrEmpty(nameof(lastName));
 
                 return new Person()
                 {
-                    Id = Guid.NewGuid(), // this guid should be generated sequentially to not slow down MSSQL reindexing at each insert
+                    Id = id,
                     FirstName = firstName.Trim(),
                     LastName = lastName.Trim(),
                     BirthDate = birthDate,
