@@ -12,5 +12,9 @@
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_WhenFirstNamesMatch_UsingProvidedParameters&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_UsingDefaultParameters_WhenFirstNamesAreSimilar&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.LastNameMatchingRuleTest.ShouldReturn_UsingProvidedParameters_WhenLastNamesMatch&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.ShouldReturn_40_WhenBirthDatesMatch_UsingDefaultParameters&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.ShouldReturn_UsingProvidedParameters_WhenBirthDatesMatch&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.Should_Return_NoMatch_WhenBirthDatesAreKnownAndDifferent&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

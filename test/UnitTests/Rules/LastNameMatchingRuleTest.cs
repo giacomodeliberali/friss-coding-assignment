@@ -11,32 +11,30 @@ using Xunit;
 
 namespace UnitTests.Rules
 {
-    public class IdentificationNumberEqualsMatchingRuleTest : RuleBaseTest
+    public class LastNameMatchingRuleTest : RuleBaseTest
     {
-        private readonly IdentificationNumberEqualsMatchingRule _sut;
+        private readonly LastNameMatchingRule _sut;
 
-        public IdentificationNumberEqualsMatchingRuleTest()
+        public LastNameMatchingRuleTest()
         {
-            _sut = new IdentificationNumberEqualsMatchingRule();
+            _sut = new LastNameMatchingRule();
         }
 
         [Fact]
-        public async Task ShouldReturn_MatchProbability_WhenIdentifiersMatch()
+        public async Task ShouldReturn_40_WhenLastNamesMatch_UsingDefaultParameters()
         {
             // Arrange
-            const string identificationNumber = "12345";
-
             var person1 = Person.Factory.Create(
                 "John",
                 "Doe",
                 null,
-                identificationNumber);
+                null);
 
             var person2 = Person.Factory.Create(
-                "Alice",
-                "McAfee",
+                "John",
+                "Doe",
                 null,
-                identificationNumber);
+                null);
 
             var rule = MatchingRule.Factory.Create(
                 _sut.GetType().GetAssemblyQualifiedName(),
@@ -49,40 +47,43 @@ namespace UnitTests.Rules
             var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
 
             // Assert
-            probability.ShouldBe(MatchingProbabilityConstants.Match);
-            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(0);
+            probability.ShouldBe(0.4m);
+            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
 
         [Fact]
-        public async Task ShouldCallNextDelegate_When_IdentifierDoNotMatch_AndReturnCurrentProbability()
+        public async Task ShouldReturn_UsingProvidedParameters_WhenLastNamesMatch()
         {
             // Arrange
             var person1 = Person.Factory.Create(
                 "John",
-                "Doe",
-                null,
-                "12345");
-
-            var person2 = Person.Factory.Create(
-                "Alice",
                 "McAfee",
                 null,
-                "54321");
+                null);
+
+            var person2 = Person.Factory.Create(
+                "John",
+                "McAfee",
+                null,
+                null);
+
+            var providedMatchProbability = 0.075m;
 
             var rule = MatchingRule.Factory.Create(
                 _sut.GetType().GetAssemblyQualifiedName(),
                 "name",
                 "description",
                 isEnabled: true,
-                new List<MatchingRuleParameter>());
-
-            const decimal initialProbability = 0.5m; // 50%
+                new List<MatchingRuleParameter>()
+                {
+                    MatchingRuleParameter.Factory.Create(LastNameMatchingRule.IncreaseProbabilityWhenEqualsLastNames, providedMatchProbability),
+                });
 
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, initialProbability, NextMatchingRuleDelegate);
+            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
 
             // Assert
-            probability.ShouldBe(initialProbability);
+            probability.ShouldBe(providedMatchProbability);
             NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
     }

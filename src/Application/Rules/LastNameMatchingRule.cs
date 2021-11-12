@@ -10,7 +10,10 @@ namespace Application.Rules
     [RuleParameter(IncreaseProbabilityWhenEqualsLastNames, "The probability to add for a last name exact match.")]
     public class LastNameMatchingRule : IRuleContributor
     {
-        private const string IncreaseProbabilityWhenEqualsLastNames = nameof(IncreaseProbabilityWhenEqualsLastNames);
+        /// <summary>
+        /// The name of the parameter to adjust the probability to add for a last name exact match.
+        /// </summary>
+        public const string IncreaseProbabilityWhenEqualsLastNames = nameof(IncreaseProbabilityWhenEqualsLastNames);
 
         /// <inheritdoc />
         public async Task<decimal> MatchAsync(

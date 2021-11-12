@@ -11,7 +11,10 @@ namespace Application.Rules
     [RuleParameter(IncreaseProbabilityWhenBirthDateMatches, "The probability to add when birthdates match.")]
     public class BirthDateEqualsMatchingRule : IRuleContributor
     {
-        private const string IncreaseProbabilityWhenBirthDateMatches = nameof(IncreaseProbabilityWhenBirthDateMatches);
+        /// <summary>
+        /// The name of the parameter to adjust the probability to add when birthdates match.
+        /// </summary>
+        public const string IncreaseProbabilityWhenBirthDateMatches = nameof(IncreaseProbabilityWhenBirthDateMatches);
 
         /// <inheritdoc />
         public async Task<decimal> MatchAsync(

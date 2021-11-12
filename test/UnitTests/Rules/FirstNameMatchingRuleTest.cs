@@ -11,15 +11,13 @@ using Xunit;
 
 namespace UnitTests.Rules
 {
-    public class FirstNameMatchingRuleTest
+    public class FirstNameMatchingRuleTest : RuleBaseTest
     {
         private readonly FirstNameMatchingRule _sut;
-        private readonly NextMatchingRuleDelegate _next;
 
         public FirstNameMatchingRuleTest()
         {
             _sut = new FirstNameMatchingRule();
-            _next = Substitute.For<NextMatchingRuleDelegate>();
         }
 
         [Fact]
@@ -45,14 +43,12 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>());
 
-            _next.Invoke(Arg.Any<decimal>()).ReturnsForAnyArgs(x => Task.FromResult(x.Arg<decimal>())); // return input
-
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, _next);
+            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
 
             // Assert
             probability.ShouldBe(0.2m);
-            _next.ReceivedCalls().Count().ShouldBe(1);
+            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
 
         [Theory]
@@ -84,14 +80,12 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>());
 
-            _next.Invoke(Arg.Any<decimal>()).ReturnsForAnyArgs(x => Task.FromResult(x.Arg<decimal>())); // return input
-
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, _next);
+            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
 
             // Assert
             probability.ShouldBe(0.15m);
-            _next.ReceivedCalls().Count().ShouldBe(1);
+            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
 
         [Fact]
@@ -122,14 +116,12 @@ namespace UnitTests.Rules
                     MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, providedMatchProbability),
                 });
 
-            _next.Invoke(Arg.Any<decimal>()).ReturnsForAnyArgs(x => Task.FromResult(x.Arg<decimal>())); // return input
-
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, _next);
+            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
 
             // Assert
             probability.ShouldBe(providedMatchProbability);
-            _next.ReceivedCalls().Count().ShouldBe(1);
+            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
 
         [Fact]
@@ -160,14 +152,12 @@ namespace UnitTests.Rules
                     MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenSimilarFirstNames, providedSimilarityProbability),
                 });
 
-            _next.Invoke(Arg.Any<decimal>()).ReturnsForAnyArgs(x => Task.FromResult(x.Arg<decimal>())); // return input
-
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, _next);
+            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
 
             // Assert
             probability.ShouldBe(providedSimilarityProbability);
-            _next.ReceivedCalls().Count().ShouldBe(1);
+            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
     }
 }
