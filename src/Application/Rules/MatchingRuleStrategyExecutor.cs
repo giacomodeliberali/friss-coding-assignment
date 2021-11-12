@@ -74,7 +74,7 @@ namespace Application.Rules
 
             _logger.LogDebug("Start pipeline for strategy {StrategyName} comparing {FirstPersonId} and {SecondPersonId}", strategy.Name, first.Id, second.Id);
 
-            var initialScore = 0m;
+            const decimal initialScore = MatchingProbabilityConstants.NoMatch;
             var finalProbability =  await rulesPipelines(initialScore);
 
             _logger.LogDebug("End pipeline with probability {FinalProbability}", finalProbability);

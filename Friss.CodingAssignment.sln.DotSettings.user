@@ -16,5 +16,13 @@
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.ShouldReturn_40_WhenBirthDatesMatch_UsingDefaultParameters&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.ShouldReturn_UsingProvidedParameters_WhenBirthDatesMatch&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.Should_Return_NoMatch_WhenBirthDatesAreKnownAndDifferent&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.ShouldExecuteTheStrategy&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.ShouldExecuteTheStrategyRules_InTheCorrectOrder&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_SkipNonEnabledRules&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.ShouldThrow_When_RuleIsNotRegisteredInDiContainer&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_ReturnWhenProbabilityIsAbove100&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_HandleAllDisabledRules&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_IfStrategy_Or_PeopleAreNull&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.LastNameMatchingRuleTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
