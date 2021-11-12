@@ -4,7 +4,7 @@ namespace Application.Contracts.Rules
 {
     public record RuleDto
     {
-        public string Type { get; set; }
+        public string AssemblyQualifiedName { get; set; }
 
         public string Description { get; set; }
 

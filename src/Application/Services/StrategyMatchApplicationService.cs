@@ -92,7 +92,6 @@ namespace Application.Services
                 {
                     return new StrategyDto.RuleDto()
                     {
-                        Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
                         IsEnabled = r.IsEnabled,
@@ -183,7 +182,7 @@ namespace Application.Services
 
                 var ruleTypeDto = new RuleDto()
                 {
-                    Type = type.GetAssemblyQualifiedName(),
+                    AssemblyQualifiedName = type.GetAssemblyQualifiedName(),
                     Description = type.GetXmlDocsSummary(),
                     Parameters = ruleParameterAttributes.Select(a => new RuleDto.ParameterDto()
                     {
