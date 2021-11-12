@@ -28,11 +28,11 @@ namespace Application.Rules
         }
 
         /// <inheritdoc />
-        public async Task<decimal> MatchAsync(
+        public async Task<ProbabilitySameIdentity> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentProbability,
+            ProbabilitySameIdentity currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (AreBirthDatesPopulated(first.BirthDate, second.BirthDate))
@@ -48,10 +48,10 @@ namespace Application.Rules
                         second.BirthDate.Value.Date,
                         increaseProbabilityWhenBirthDatesMatch);
 
-                    return await next(currentProbability + increaseProbabilityWhenBirthDatesMatch);
+                    currentProbability.AddContributor(rule, increaseProbabilityWhenBirthDatesMatch);
                 }
 
-                return MatchingProbabilityConstants.NoMatch;
+                return currentProbability.NoMatch(rule);
             }
 
             return await next(currentProbability);

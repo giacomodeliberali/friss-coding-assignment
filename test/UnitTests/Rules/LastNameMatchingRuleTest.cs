@@ -47,10 +47,11 @@ namespace UnitTests.Rules
                 new List<MatchingRuleParameter>());
 
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
+            var probabilitySameIdentity = await _sut.MatchAsync(rule, person1, person2, new ProbabilitySameIdentity(), NextMatchingRuleDelegate);
 
             // Assert
-            probability.ShouldBe(0.4m);
+            probabilitySameIdentity.Probability.ShouldBe(0.4m);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(1);
             NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
 
@@ -83,10 +84,11 @@ namespace UnitTests.Rules
                 });
 
             // Act
-            var probability = await _sut.MatchAsync(rule, person1, person2, MatchingProbabilityConstants.NoMatch, NextMatchingRuleDelegate);
+            var probabilitySameIdentity = await _sut.MatchAsync(rule, person1, person2, new ProbabilitySameIdentity(), NextMatchingRuleDelegate);
 
             // Assert
-            probability.ShouldBe(providedMatchProbability);
+            probabilitySameIdentity.Probability.ShouldBe(providedMatchProbability);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(1);
             NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(1);
         }
     }

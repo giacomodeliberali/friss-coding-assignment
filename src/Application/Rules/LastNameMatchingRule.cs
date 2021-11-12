@@ -28,11 +28,11 @@ namespace Application.Rules
         }
 
         /// <inheritdoc />
-        public async Task<decimal> MatchAsync(
+        public async Task<ProbabilitySameIdentity> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentProbability,
+            ProbabilitySameIdentity currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (first.LastName == second.LastName)
@@ -45,7 +45,7 @@ namespace Application.Rules
                     second.LastName,
                     increaseProbabilityWhenEqualsLastNames);
 
-                return await next(currentProbability + increaseProbabilityWhenEqualsLastNames);
+                currentProbability.AddContributor(rule, increaseProbabilityWhenEqualsLastNames);
             }
 
             return await next(currentProbability);

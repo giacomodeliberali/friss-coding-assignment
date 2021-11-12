@@ -49,7 +49,7 @@ namespace Application.Services
         }
 
         /// <inheritdoc />
-        public async Task<decimal> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId, string strategyName)
+        public async Task<ProbabilitySameIdentityDto> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId, string strategyName)
         {
             var strategy = await _matchingStrategyRepository.GetByNameAsync(strategyName ?? "Default");
 
@@ -74,7 +74,17 @@ namespace Application.Services
 
             var probabilitySameIdentity = await _matchingRuleStrategyExecutor.ExecuteAsync(strategy, firstPerson, secondPerson);
 
-            return probabilitySameIdentity;
+            return new ProbabilitySameIdentityDto()
+            {
+                Probability = probabilitySameIdentity.Probability,
+                Contributors = probabilitySameIdentity.Contributors.Select(c => new ProbabilitySameIdentityDto.ContributorDto()
+                {
+                    Name = c.Name,
+                    Description = c.Description,
+                    RuleType = c.RuleType,
+                    Value = c.Value,
+                }).ToList()
+            };
         }
 
         /// <inheritdoc />

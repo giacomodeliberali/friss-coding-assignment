@@ -77,7 +77,7 @@ namespace Web
         /// <param name="secondPersonId">The second person to compare.</param>
         /// <param name="strategyName">The strategy to use (or null for "Default").</param>
         /// <returns></returns>
-        [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProbabilitySameIdentityDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status500InternalServerError)]
         [HttpGet("probability-same-identity")]

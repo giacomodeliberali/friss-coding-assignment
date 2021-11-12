@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Model;
 
@@ -18,9 +17,9 @@ namespace Domain.Rules
         /// <param name="rule">The rule that could contain parameters.</param>
         /// <param name="first">The first person to compare.</param>
         /// <param name="second">The second person to be compared with.</param>
-        /// <param name="currentProbability">The score calculated in the pipeline up to this point.</param>
+        /// <param name="currentProbability">The probability calculated in the pipeline up to this point.</param>
         /// <param name="next">The delegate to the next rule in the pipeline. Invoke it to continue the pipeline or return a value to terminate it.</param>
-        /// <returns></returns>
-        Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentProbability, NextMatchingRuleDelegate next);
+        /// <returns>The updated probability.</returns>
+        Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability, NextMatchingRuleDelegate next);
     }
 }

@@ -27,7 +27,7 @@ namespace Application.Services
         /// <param name="secondPersonId">The second <see cref="Person"/> to compare.</param>
         /// <param name="strategyName">The name of the strategy to use.</param>
         /// <returns>The probability (0-1) the the two people's identities match.</returns>
-        Task<decimal> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId, string strategyName);
+        Task<ProbabilitySameIdentityDto> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId, string strategyName);
 
         /// <summary>
         /// Returns all the created people.

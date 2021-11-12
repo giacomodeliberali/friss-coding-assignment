@@ -15,6 +15,6 @@ namespace Domain.Rules
         /// <param name="first">The first <see cref="Person"/> to compare.</param>
         /// <param name="second">The second <see cref="Person"/> to compare.</param>
         /// <returns>The probability that two provided <see cref="Person"/> have the same identity.</returns>
-        Task<decimal> ExecuteAsync(MatchingStrategy strategy, Person first, Person second);
+        Task<ProbabilitySameIdentity> ExecuteAsync(MatchingStrategy strategy, Person first, Person second);
     }
 }

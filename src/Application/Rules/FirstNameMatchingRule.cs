@@ -35,11 +35,11 @@ namespace Application.Rules
         }
 
         /// <inheritdoc />
-        public async Task<decimal> MatchAsync(
+        public async Task<ProbabilitySameIdentity> MatchAsync(
             MatchingRule rule,
             Person first,
             Person second,
-            decimal currentProbability,
+            ProbabilitySameIdentity currentProbability,
             NextMatchingRuleDelegate next)
         {
             if (first.FirstName == second.FirstName)
@@ -52,10 +52,9 @@ namespace Application.Rules
                     second.FirstName,
                     increaseProbabilityWhenEqualsFirstNames);
 
-                return await next(currentProbability + increaseProbabilityWhenEqualsFirstNames);
+                currentProbability.AddContributor(rule, increaseProbabilityWhenEqualsFirstNames);
             }
-
-            if (AreSimilar(first.FirstName, second.FirstName))
+            else if (AreSimilar(first.FirstName, second.FirstName))
             {
                 var increaseScorePercentageSimilarFirstNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenSimilarFirstNames, defaultValue: 0.15m);
 
@@ -65,7 +64,7 @@ namespace Application.Rules
                     second.FirstName,
                     increaseScorePercentageSimilarFirstNames);
 
-                return await next(currentProbability + increaseScorePercentageSimilarFirstNames);
+                currentProbability.AddContributor(rule, increaseScorePercentageSimilarFirstNames);
             }
 
             return await next(currentProbability);

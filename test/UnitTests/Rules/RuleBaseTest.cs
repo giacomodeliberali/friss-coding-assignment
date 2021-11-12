@@ -16,7 +16,9 @@ namespace UnitTests.Rules
             NextMatchingRuleDelegate = Substitute.For<NextMatchingRuleDelegate>();
 
             // mock to return input
-            NextMatchingRuleDelegate.Invoke(Arg.Any<decimal>()).ReturnsForAnyArgs(x => Task.FromResult(x.Arg<decimal>()));
+            NextMatchingRuleDelegate
+                .Invoke(Arg.Any<ProbabilitySameIdentity>())
+                .ReturnsForAnyArgs(x => Task.FromResult(x.Arg<ProbabilitySameIdentity>()));
         }
     }
 }

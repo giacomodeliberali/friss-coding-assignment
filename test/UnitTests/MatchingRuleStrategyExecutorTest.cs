@@ -63,10 +63,11 @@ namespace UnitTests
                 });
 
             // Act
-            var probability = await _sut.ExecuteAsync(strategy, _person1, _person2);
+            var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -93,10 +94,11 @@ namespace UnitTests
                 });
 
             // Act
-            var probability = await _sut.ExecuteAsync(strategy, _person1, _person2);
+            var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -123,11 +125,11 @@ namespace UnitTests
                 });
 
             // Act
-            var probability = await _sut.ExecuteAsync(strategy, _person1, _person2);
+            var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
-        }
+            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(1);        }
 
         [Fact]
         public async Task ShouldThrow_When_RuleIsNotRegisteredInDiContainer()
@@ -183,10 +185,11 @@ namespace UnitTests
                 });
 
             // Act
-            var probability = await _sut.ExecuteAsync(strategy, _person1, _person2);
+            var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -219,10 +222,11 @@ namespace UnitTests
                 });
 
             // Act
-            var probability = await _sut.ExecuteAsync(strategy, _person1, _person2);
+            var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            probabilitySameIdentity.Contributors.Count.ShouldBe(0);
         }
 
         [Fact]
@@ -263,37 +267,38 @@ namespace UnitTests
 
         public class AlwaysMatchingAndReturnRule : IRuleContributor
         {
-            public async Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentProbability,
+            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return MatchingProbabilityConstants.Match;
+                return currentProbability.Match(rule);
             }
         }
 
         public class AlwaysNonMatchAndReturnRule : IRuleContributor
         {
-            public async Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentProbability,
+            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return MatchingProbabilityConstants.NoMatch;
+                return currentProbability.NoMatch(rule);
             }
         }
 
         public class RuleNonRegisteredInDiContainer : IRuleContributor
         {
-            public async Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentProbability,
+            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return MatchingProbabilityConstants.NoMatch;
+                return currentProbability.NoMatch(rule);
             }
         }
 
         public class AlwaysAdd50Rule : IRuleContributor
         {
-            public async Task<decimal> MatchAsync(MatchingRule rule, Person first, Person second, decimal currentProbability,
+            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return await next(currentProbability + 0.5m);
+                currentProbability.AddContributor(rule, 0.5m);
+                return await next(currentProbability);
             }
         }
     }
