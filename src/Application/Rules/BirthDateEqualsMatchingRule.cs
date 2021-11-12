@@ -38,20 +38,25 @@ namespace Application.Rules
             if (AreBirthDatesPopulated(first.BirthDate, second.BirthDate))
             {
                 // do not consider time when comparing dates
-                if (first.BirthDate!.Value.Date == second.BirthDate!.Value.Date)
+                if (first.BirthDate!.Value.Date != second.BirthDate!.Value.Date)
                 {
-                    var increaseProbabilityWhenBirthDatesMatch = rule.GetParameterOrDefault(IncreaseProbabilityWhenBirthDateMatches, defaultValue: 0.4m);
-
                     _logger.LogDebug(
-                        "Found birth dates match ({First} - {Second}). Adding {Probability}",
+                        "Birth dates are populated and different ({First} - {Second}). Returning 0%",
                         first.BirthDate.Value.Date,
-                        second.BirthDate.Value.Date,
-                        increaseProbabilityWhenBirthDatesMatch);
+                        second.BirthDate.Value.Date);
 
-                    currentProbability.AddContributor(rule, increaseProbabilityWhenBirthDatesMatch);
+                    return currentProbability.NoMatch(rule);
                 }
 
-                return currentProbability.NoMatch(rule);
+                var increaseProbabilityWhenBirthDatesMatch = rule.GetParameterOrDefault(IncreaseProbabilityWhenBirthDateMatches, defaultValue: 0.4m);
+
+                _logger.LogDebug(
+                    "Found birth dates match ({First} - {Second}). Adding {Probability}",
+                    first.BirthDate.Value.Date,
+                    second.BirthDate.Value.Date,
+                    increaseProbabilityWhenBirthDatesMatch);
+
+                currentProbability.AddContributor(rule, increaseProbabilityWhenBirthDatesMatch);
             }
 
             return await next(currentProbability);
