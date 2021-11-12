@@ -115,6 +115,12 @@ namespace Domain.Model
                     .Select(t => ((RuleParameterAttribute)t).ParameterName)
                     .ToList();
 
+                var distinctParameterNames = parameters.Select(p => p.Name).Distinct().ToList();
+                if (distinctParameterNames.Count != parameters.Count)
+                {
+                    throw new DuplicatedParametersException(ruleType.GetAssemblyQualifiedName());
+                }
+
                 foreach (var parameter in parameters)
                 {
                     if (!validRuleParameterNames.Contains(parameter.Name))

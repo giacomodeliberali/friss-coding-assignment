@@ -5,7 +5,7 @@ using Shouldly;
 using WriteModel;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Domain
 {
     public class PersonTests
     {

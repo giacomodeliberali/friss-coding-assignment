@@ -3,7 +3,7 @@ using Domain.Model;
 using Shouldly;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Domain
 {
     public class MatchingRuleParameterTest
     {

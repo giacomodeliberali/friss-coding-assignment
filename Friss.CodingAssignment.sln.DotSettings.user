@@ -1,28 +1,4 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=46bbc451_002Daeea_002D4e75_002Db30a_002D94a52ceeddbc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="T001_Should_CreateAPerson_AndHandleWhiteSpacesProperly" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.PersonTests&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingStrategyTest&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingRuleTest&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.MatchingRuleParameterTest&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.IdentificationNumberEqualsMatchingRuleTest.ShouldReturn_1_WhenIdentifiersMatch&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.IdentificationNumberEqualsMatchingRuleTest.ShouldCallNext_When_IdentifierDoNotMatch&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_20_WhenFirstNamesMatch_UsingDefaultParameters&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_15_WhenFirstNamesAreSimilar_UsingDefaultParameters&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_WhenFirstNamesMatch_UsingProvidedParameters&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest.ShouldReturn_UsingDefaultParameters_WhenFirstNamesAreSimilar&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.FirstNameMatchingRuleTest&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.LastNameMatchingRuleTest.ShouldReturn_UsingProvidedParameters_WhenLastNamesMatch&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.ShouldReturn_40_WhenBirthDatesMatch_UsingDefaultParameters&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.ShouldReturn_UsingProvidedParameters_WhenBirthDatesMatch&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.BirthDateEqualsMatchingRuleTest.Should_Return_NoMatch_WhenBirthDatesAreKnownAndDifferent&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.ShouldExecuteTheStrategy&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.ShouldExecuteTheStrategyRules_InTheCorrectOrder&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_SkipNonEnabledRules&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.ShouldThrow_When_RuleIsNotRegisteredInDiContainer&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_ReturnWhenProbabilityIsAbove100&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_HandleAllDisabledRules&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.RuleExecutorTest.Should_IfStrategy_Or_PeopleAreNull&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::567421F8-73F7-43D3-AB0F-3DDA4304BD6D::net5.0::UnitTests.Rules.LastNameMatchingRuleTest&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Project Location="/Users/giacomodeliberali/Code/projects/friss/Friss.CodingAssignment/test/UnitTests" Presentation="&amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

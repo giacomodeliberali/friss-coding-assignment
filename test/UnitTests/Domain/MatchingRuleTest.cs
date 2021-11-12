@@ -7,7 +7,7 @@ using Domain.Model;
 using Shouldly;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Domain
 {
     public class MatchingRuleTest
     {
@@ -70,7 +70,7 @@ namespace UnitTests
                 isEnabled: false,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create("IncreaseProbabilityWhenEqualsFirstNames", 0.05m)
+                    MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.05m)
                 });
 
             // Act & Assert
@@ -79,8 +79,28 @@ namespace UnitTests
             sut.IsEnabled.ShouldBe(false);
             sut.RuleType.ShouldBe(typeof(FirstNameMatchingRule));
             sut.Parameters.Count.ShouldBe(1);
-            sut.Parameters.Single().Name.ShouldBe("IncreaseProbabilityWhenEqualsFirstNames");
+            sut.Parameters.Single().Name.ShouldBe(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames);
             sut.Parameters.Single().Value.ShouldBe(0.05m);
+        }
+
+        [Fact]
+        public void Should_Throw_WhenPassingDuplicateParameters()
+        {
+            // Arrange, Act & Assert
+            Should.Throw<DuplicatedParametersException>(() =>
+            {
+                var sut = MatchingRule.Factory.Create(
+                    typeof(FirstNameMatchingRule).GetAssemblyQualifiedName(),
+                    "name",
+                    "description",
+                    isEnabled: false,
+                    new List<MatchingRuleParameter>()
+                    {
+                        MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.05m),
+                        MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.08m),
+                        MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenSimilarFirstNames, 0.08m),
+                    });
+            });
         }
     }
 }
