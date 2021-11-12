@@ -267,28 +267,28 @@ namespace UnitTests
 
         public class AlwaysMatchingAndReturnRule : IRuleContributor
         {
-            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
+            public Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return currentProbability.Match(rule);
+                return Task.FromResult(currentProbability.Match(rule));
             }
         }
 
         public class AlwaysNonMatchAndReturnRule : IRuleContributor
         {
-            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
+            public Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return currentProbability.NoMatch(rule);
+                return Task.FromResult(currentProbability.NoMatch(rule));
             }
         }
 
         public class RuleNonRegisteredInDiContainer : IRuleContributor
         {
-            public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
+            public Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return currentProbability.NoMatch(rule);
+                return Task.FromResult(currentProbability.NoMatch(rule));
             }
         }
 
