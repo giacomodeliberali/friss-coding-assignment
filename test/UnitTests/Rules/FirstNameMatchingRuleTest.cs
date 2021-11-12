@@ -5,6 +5,7 @@ using Application.Rules;
 using Domain.Extensions;
 using Domain.Model;
 using Domain.Rules;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using Xunit;
@@ -17,7 +18,9 @@ namespace UnitTests.Rules
 
         public FirstNameMatchingRuleTest()
         {
-            _sut = new FirstNameMatchingRule();
+            var logger = Substitute.For<ILogger<FirstNameMatchingRule>>();
+
+            _sut = new FirstNameMatchingRule(logger);
         }
 
         [Fact]

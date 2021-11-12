@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Domain.Model;
 using Domain.Rules;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Rules
 {
@@ -9,6 +10,16 @@ namespace Application.Rules
     /// </summary>
     public class IdentificationNumberEqualsMatchingRule : IRuleContributor
     {
+        private readonly ILogger<IdentificationNumberEqualsMatchingRule> _logger;
+
+        /// <summary>
+        /// Creates the rule.
+        /// </summary>
+        public IdentificationNumberEqualsMatchingRule(ILogger<IdentificationNumberEqualsMatchingRule> logger)
+        {
+            _logger = logger;
+        }
+
         /// <inheritdoc />
         public async Task<decimal> MatchAsync(
             MatchingRule rule,
@@ -19,6 +30,11 @@ namespace Application.Rules
         {
             if (AreIdentificationNumbersPopulatedAndEqual(first.IdentificationNumber, second.IdentificationNumber))
             {
+                _logger.LogDebug(
+                    "Found identification number match ({First} - {Second}). Returning match",
+                    first.IdentificationNumber,
+                    second.IdentificationNumber);
+
                 return MatchingProbabilityConstants.Match;
             }
 

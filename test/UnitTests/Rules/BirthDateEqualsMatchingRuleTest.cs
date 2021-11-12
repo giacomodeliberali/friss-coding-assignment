@@ -6,6 +6,7 @@ using Application.Rules;
 using Domain.Extensions;
 using Domain.Model;
 using Domain.Rules;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using Xunit;
@@ -18,7 +19,9 @@ namespace UnitTests.Rules
 
         public BirthDateEqualsMatchingRuleTest()
         {
-            _sut = new BirthDateEqualsMatchingRule();
+            var logger = Substitute.For<ILogger<BirthDateEqualsMatchingRule>>();
+
+            _sut = new BirthDateEqualsMatchingRule(logger);
         }
 
         [Fact]

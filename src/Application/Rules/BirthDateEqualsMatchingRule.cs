@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Domain.Model;
 using Domain.Rules;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Rules
 {
@@ -11,10 +12,20 @@ namespace Application.Rules
     [RuleParameter(IncreaseProbabilityWhenBirthDateMatches, "The probability to add when birthdates match.")]
     public class BirthDateEqualsMatchingRule : IRuleContributor
     {
+        private readonly ILogger<BirthDateEqualsMatchingRule> _logger;
+
         /// <summary>
         /// The name of the parameter to adjust the probability to add when birthdates match.
         /// </summary>
         public const string IncreaseProbabilityWhenBirthDateMatches = nameof(IncreaseProbabilityWhenBirthDateMatches);
+
+        /// <summary>
+        /// Creates the rule.
+        /// </summary>
+        public BirthDateEqualsMatchingRule(ILogger<BirthDateEqualsMatchingRule> logger)
+        {
+            _logger = logger;
+        }
 
         /// <inheritdoc />
         public async Task<decimal> MatchAsync(
@@ -30,6 +41,13 @@ namespace Application.Rules
                 if (first.BirthDate!.Value.Date == second.BirthDate!.Value.Date)
                 {
                     var increaseProbabilityWhenBirthDatesMatch = rule.GetParameterOrDefault(IncreaseProbabilityWhenBirthDateMatches, defaultValue: 0.4m);
+
+                    _logger.LogDebug(
+                        "Found birth dates match ({First} - {Second}). Adding {Probability}",
+                        first.BirthDate.Value.Date,
+                        second.BirthDate.Value.Date,
+                        increaseProbabilityWhenBirthDatesMatch);
+
                     return await next(currentProbability + increaseProbabilityWhenBirthDatesMatch);
                 }
 

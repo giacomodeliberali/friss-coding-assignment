@@ -5,6 +5,7 @@ using Application.Rules;
 using Domain.Extensions;
 using Domain.Model;
 using Domain.Rules;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using Xunit;
@@ -17,7 +18,9 @@ namespace UnitTests.Rules
 
         public IdentificationNumberEqualsMatchingRuleTest()
         {
-            _sut = new IdentificationNumberEqualsMatchingRule();
+            var logger = Substitute.For<ILogger<IdentificationNumberEqualsMatchingRule>>();
+
+            _sut = new IdentificationNumberEqualsMatchingRule(logger);
         }
 
         [Fact]
