@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Rules;
-using Application.Services;
 using Domain.Extensions;
 using Domain.Model;
 using Domain.Repositories;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Application.Seed
 {
     /// <summary>
-    /// Inserts the default strategy if not present.
+    /// Inserts the default strategy if not present (<seealso cref="IDataSeedContributor"/> for why this approach is wrong).
     /// </summary>
     public class DefaultStrategySeed : IDataSeedContributor
     {

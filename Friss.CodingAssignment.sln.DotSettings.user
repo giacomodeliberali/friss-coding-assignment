@@ -1,4 +1,12 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=46bbc451_002Daeea_002D4e75_002Db30a_002D94a52ceeddbc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="T001_Should_CreateAPerson_AndHandleWhiteSpacesProperly" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/giacomodeliberali/Code/projects/friss/Friss.CodingAssignment/test/UnitTests" Presentation="&amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" /&gt;
+  &lt;Or&gt;
+    &lt;Project Location="/Users/giacomodeliberali/Code/projects/friss/Friss.CodingAssignment/test/UnitTests" Presentation="&amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" /&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;xUnit::2E5F4519-723B-4E8B-BC5A-C39EA5F44C42::net5.0::IntegrationTests.SwaggerTest&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::2E5F4519-723B-4E8B-BC5A-C39EA5F44C42::net5.0::IntegrationTests.CalculateProbabilityTest.CalculateProbabilityForDemoUsers&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::2E5F4519-723B-4E8B-BC5A-C39EA5F44C42::net5.0::IntegrationTests.CalculateProbabilityTest&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::2E5F4519-723B-4E8B-BC5A-C39EA5F44C42::net5.0::IntegrationTests.PeopleControllerTest&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+  &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

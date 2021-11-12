@@ -33,6 +33,14 @@ namespace Application.Rules
             first.ThrowIfNull(nameof(first));
             second.ThrowIfNull(nameof(second));
 
+            _logger.LogDebug("Start pipeline for strategy {StrategyName} comparing {FirstPersonId} and {SecondPersonId}", strategy.Name, first.Id, second.Id);
+
+            if (first.Id == second.Id)
+            {
+                _logger.LogDebug("People have the same id, terminating pipeline");
+                return new ProbabilitySameIdentity(MatchingProbabilityConstants.Match);
+            }
+
             NextMatchingRuleDelegate finalNext = (finalScore) =>
             {
                 _logger.LogDebug("Pipeline terminated all rules without interruption");
@@ -76,8 +84,6 @@ namespace Application.Rules
                             return await next(current);
                         };
                     });
-
-            _logger.LogDebug("Start pipeline for strategy {StrategyName} comparing {FirstPersonId} and {SecondPersonId}", strategy.Name, first.Id, second.Id);
 
             var probabilitySameIdentity = new ProbabilitySameIdentity();
 
