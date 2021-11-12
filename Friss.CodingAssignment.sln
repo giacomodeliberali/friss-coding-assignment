@@ -13,9 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{80C79F21-1570-406A-A2E8-D401524DB070}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{701BB6F6-7ADF-4F51-B547-99EEBC63AD74}"
-ProjectSection(SolutionItems) = preProject
-	src\readme.md = src\readme.md
-EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore", "src\EntityFrameworkCore\EntityFrameworkCore.csproj", "{47DDE7F4-A865-4861-A42C-7D63A4EB5095}"
 EndProject

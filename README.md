@@ -78,3 +78,44 @@ public interface IMatchingRuleStrategyExecutor
 All *MatchingRule*s are discovered at runtime exploiting assembly scanning.
 To add a new rule simply create a new class that implements the `IRuleContributor`, it will be automatically
 registered into the DI container and made visible to clients.
+
+Concrete rule types are serialized inside the database, so any refactoring that will change their name or namespace introduce a breaking change (and requires a db migration).
+
+## Setup
+
+This project requires .NET 5. 
+
+### Build
+
+To build the project move in the root directory and run:
+
+```
+dotnet build
+```
+
+
+### Tests
+
+To run units and integration tests move in the root directory and run:
+
+```
+dotnet test
+```
+
+### Database
+
+The projects uses a SQL Lite db on a local file. To initialize the database move inside the root folder and run:
+
+```
+dotnet ef database update --project src/EntityFrameworkCore --startup-project src/Web.Host --verbose
+```
+
+### Run
+
+Once built you can run the project by running the command (in the `src/Web.Host`):
+
+```
+dotnet run
+```
+
+You should be able to see swagger at [https://localhost:5001/swagger](https://localhost:5001/swagger).
