@@ -2,14 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Cache;
 using Application.Contracts;
 using Application.Contracts.Rules;
 using Application.Exceptions;
-using Application.Rules;
+using Application.Extensions;
+using Domain.Exceptions;
 using Domain.Model;
 using Domain.Repositories;
 using Domain.Extensions;
 using Domain.Rules;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Namotion.Reflection;
 
 namespace Application.Services
@@ -18,153 +22,153 @@ namespace Application.Services
     public class StrategyMatchApplicationService : IStrategyMatchApplicationService
     {
         private readonly IMatchingStrategyRepository _strategyRepository;
+        private readonly ICustomMemoryCache _memoryCache;
+        private readonly ILogger<StrategyMatchApplicationService> _logger;
 
         /// <summary>
         /// Creates the application service.
         /// </summary>
         public StrategyMatchApplicationService(
-            IMatchingStrategyRepository strategyRepository)
+            IMatchingStrategyRepository strategyRepository,
+            ICustomMemoryCache memoryCache,
+            ILogger<StrategyMatchApplicationService> logger)
         {
             _strategyRepository = strategyRepository;
+            _memoryCache = memoryCache;
+            _logger = logger;
 
-            // Note: we could also have use MediatoR to split each use case in a separate command.
+            // Note: we could also have used MediatoR to split each use case in a separate command.
         }
 
         /// <inheritdoc />
         public async Task<CreateStrategyReplyDto> CreateStrategy(CreateStrategyDto input)
         {
-            var rules = new List<MatchingRule>();
-
-            foreach (var ruleDto in input.Rules.OrEmptyIfNull())
+            try
             {
-                var parameters = ruleDto.Parameters
-                    .OrEmptyIfNull()
-                    .Select(parameterDto => MatchingRuleParameter.Factory.Create(parameterDto.Name, parameterDto.Value))
-                    .ToList();
+                var rules = new List<MatchingRule>();
 
-                var rule = MatchingRule.Factory.Create(
-                    ruleDto.RuleTypeAssemblyQualifiedName,
-                    ruleDto.Name,
-                    ruleDto.Description,
-                    ruleDto.IsEnabled,
-                    parameters);
+                foreach (var ruleDto in input.Rules.OrEmptyIfNull())
+                {
+                    var parameters = ruleDto.Parameters
+                        .OrEmptyIfNull()
+                        .Select(parameterDto => MatchingRuleParameter.Factory.Create(parameterDto.Name, parameterDto.Value))
+                        .ToList();
 
-                rules.Add(rule);
+                    var rule = MatchingRule.Factory.Create(
+                        ruleDto.RuleTypeAssemblyQualifiedName,
+                        ruleDto.Name,
+                        ruleDto.Description,
+                        ruleDto.IsEnabled,
+                        parameters);
+
+                    rules.Add(rule);
+                }
+
+                var strategy = MatchingStrategy.Factory.Create(
+                    input.Name,
+                    input.Description,
+                    rules);
+
+                await _strategyRepository.CreateAsync(strategy);
+
+                return new CreateStrategyReplyDto()
+                {
+                    Id = strategy.Id,
+                };
             }
-
-            var strategy = MatchingStrategy.Factory.Create(
-                input.Name,
-                input.Description,
-                rules);
-
-            var existingStrategy = await _strategyRepository.GetByNameAsync(input.Name);
-
-            if (existingStrategy != null)
+            catch (ValidationException validationException)
             {
-                throw new StrategyAlreadyExistsException(existingStrategy.Name);
+                _logger.LogDebug(validationException, "Validation exception");
+                return null;
             }
-
-            await _strategyRepository.CreateAsync(strategy);
-
-            return new CreateStrategyReplyDto()
-            {
-                Id = strategy.Id,
-            };
         }
 
         /// <inheritdoc />
         public async Task<StrategyDto> GetByIdAsync(Guid strategyId)
         {
             var strategy = await _strategyRepository.GetByIdAsync(strategyId);
-
-            if (strategy == null)
-            {
-                throw new StrategyNotFoundException(strategyId);
-            }
-
-            // we could use automapper
-            return new StrategyDto()
-            {
-                Id = strategy.Id,
-                Name = strategy.Name,
-                Description = strategy.Description,
-                Rules = strategy.Rules.Select(r =>
-                {
-                    return new StrategyDto.RuleDto()
-                    {
-                        Name = r.Name,
-                        Description = r.Description,
-                        IsEnabled = r.IsEnabled,
-                        RuleTypeAssemblyQualifiedName = r.RuleType.GetAssemblyQualifiedName(),
-                        Parameters = r.Parameters.Select(p =>
-                        {
-                            return new StrategyDto.RuleDto.ParameterDto()
-                            {
-                                Id = p.Id,
-                                Name = p.Name,
-                                Value = p.Value,
-                            };
-                        }),
-                    };
-                }),
-            };
+            return strategy?.ToDto();
         }
 
         /// <inheritdoc />
-        public async Task DeleteStrategyAsync(Guid strategyId)
+        public async Task<IEnumerable<StrategyDto>> GetAllAsync()
+        {
+            var strategies = await _strategyRepository.GetAllAsync();
+            return strategies.Select(s => s.ToDto());
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> DeleteStrategyAsync(Guid strategyId)
         {
             var strategy = await _strategyRepository.GetByIdAsync(strategyId);
 
-            if (strategy == null)
+            if (strategy is null)
             {
-                throw new StrategyNotFoundException(strategyId);
+                return false;
             }
+
+            // remove entry from cache. Note: this should be isolated in an handler that is listening for domain events (eg. MatchingStrategyDeletedEvent)!
+            _memoryCache.RemoveIf(key => ((string) key).Contains(strategy.Id.ToString()));
 
             await _strategyRepository.DeleteAsync(strategy);
+
+            return true;
         }
 
         /// <inheritdoc />
-        public async Task UpdateStrategyAsync(UpdateStrategyDto input)
+        public async Task<bool> UpdateStrategyAsync(UpdateStrategyDto input)
         {
-            var strategy = await _strategyRepository.GetByIdAsync(input.Id);
-
-            var existingStrategy = await _strategyRepository.GetByNameAsync(input.Name);
-
-            if (existingStrategy is not null && existingStrategy.Id != strategy.Id)
+            try
             {
-                throw new StrategyAlreadyExistsException(existingStrategy.Name);
+                var strategy = await _strategyRepository.GetByIdAsync(input.Id);
+
+                var rules = new List<MatchingRule>();
+
+                foreach (var ruleDto in input.Rules.OrEmptyIfNull())
+                {
+                    var parameters = ruleDto.Parameters
+                        .OrEmptyIfNull()
+                        .Select(parameterDto =>
+                            MatchingRuleParameter.Factory.Create(parameterDto.Name, parameterDto.Value))
+                        .ToList();
+
+                    var rule = MatchingRule.Factory.Create(
+                        ruleDto.RuleTypeAssemblyQualifiedName,
+                        ruleDto.Name,
+                        ruleDto.Description,
+                        ruleDto.IsEnabled,
+                        parameters);
+
+                    rules.Add(rule);
+                }
+
+                strategy.Update(
+                    input.Name,
+                    input.Description,
+                    rules);
+
+                await _strategyRepository.UpdateAsync(strategy);
+
+                // remove entry from cache. Note: this should be isolated in an handler that is listening for domain events (eg. MatchingStrategyDeletedEvent)!
+                _memoryCache.RemoveIf(key => ((string) key).Contains(strategy.Id.ToString()));
+
+                return true;
             }
-
-            var rules = new List<MatchingRule>();
-
-            foreach (var ruleDto in input.Rules.OrEmptyIfNull())
+            catch (ValidationException validationException)
             {
-                var parameters = ruleDto.Parameters
-                    .OrEmptyIfNull()
-                    .Select(parameterDto => MatchingRuleParameter.Factory.Create(parameterDto.Name, parameterDto.Value))
-                    .ToList();
-
-                var rule = MatchingRule.Factory.Create(
-                    ruleDto.RuleTypeAssemblyQualifiedName,
-                    ruleDto.Name,
-                    ruleDto.Description,
-                    ruleDto.IsEnabled,
-                    parameters);
-
-                rules.Add(rule);
+                _logger.LogDebug(validationException, "Validation exception");
+                return false;
             }
-
-            strategy.Update(
-                input.Name,
-                input.Description,
-                rules);
-
-            await _strategyRepository.UpdateAsync(strategy);
         }
 
         /// <inheritdoc />
-        public Task<List<RuleDto>> GetAvailableRulesAsync()
+        public Task<IEnumerable<RuleDto>> GetAvailableRulesAsync()
         {
+            if (_memoryCache.TryGetValue(CacheKeys.AvailableRules, out var cachedRules))
+            {
+                return Task.FromResult((IEnumerable<RuleDto>)cachedRules);
+            }
+
             var ruleContributorType = typeof(IRuleContributor);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .AsParallel()
@@ -194,7 +198,9 @@ namespace Application.Services
                 rules.Add(ruleTypeDto);
             }
 
-            return Task.FromResult(rules);
+            _memoryCache.Set(CacheKeys.AvailableRules, rules);
+
+            return Task.FromResult((IEnumerable<RuleDto>)rules);
         }
     }
 }

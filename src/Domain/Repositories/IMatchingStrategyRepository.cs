@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Model;
 
@@ -36,10 +37,9 @@ namespace Domain.Repositories
         Task<MatchingStrategy> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Returns the requested strategy by name or null.
+        /// Returns all the strategies.
         /// </summary>
-        /// <param name="name">The strategy name.</param>
-        /// <returns>The requested strategy or null.</returns>
-        Task<MatchingStrategy> GetByNameAsync(string name);
+        /// <returns>The list of strategies.</returns>
+        Task<List<MatchingStrategy>> GetAllAsync();
     }
 }

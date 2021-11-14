@@ -1,9 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Application.Contracts;
 using Application.Contracts.Person;
+using Application.Seed;
 using IntegrationTests.Setup;
 using Shouldly;
 using Web.Host;
@@ -13,13 +17,6 @@ namespace IntegrationTests
 {
     public class PeopleControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private const string AndrewCrawId = "26a02c40-c303-447a-ab58-c0a98c1341ea";
-        private const string AndrewCraw2Id = "a35ad06e-33fb-4201-bd38-e3da29445676";
-        private const string AndrewCrawWithIdentificationNumberId = "aada3c0c-bbaf-490c-9078-8b8503a5982d";
-        private const string ACrawId = "3215bd09-a18b-4f70-b1f8-24ad33c7bc1d";
-        private const string PettySmithId = "7c922928-fe5f-417f-9017-d882b23be5ce";
-        private const string PettySmithWithIdentificationNumberId = "3677d252-7dc6-4562-b9c4-ab1e19648530";
-
         private readonly HttpClient _httpClient;
 
         public PeopleControllerTest(CustomWebApplicationFactory<Startup> factory)
@@ -28,16 +25,21 @@ namespace IntegrationTests
         }
 
         [Theory]
-        [InlineData(AndrewCrawId, AndrewCrawId, 1, 0)]
-        [InlineData(AndrewCrawId, AndrewCraw2Id, 0.6, 2)]
-        [InlineData(AndrewCrawId, PettySmithId, 0.4, 1)]
-        [InlineData(AndrewCrawId, ACrawId, 0.95, 3)]
-        [InlineData(AndrewCrawWithIdentificationNumberId, PettySmithWithIdentificationNumberId, 1, 1)]
+        [InlineData(DemoUsersSeed.AndrewCrawId, DemoUsersSeed.AndrewCrawId, 1, 0)]
+        [InlineData(DemoUsersSeed.AndrewCrawId, DemoUsersSeed.AndrewCraw2Id, 0.6, 2)]
+        [InlineData(DemoUsersSeed.AndrewCrawId, DemoUsersSeed.PettySmithId, 0.4, 1)]
+        [InlineData(DemoUsersSeed.AndrewCrawId, DemoUsersSeed.ACrawId, 0.95, 3)]
+        [InlineData(DemoUsersSeed.AndrewCrawWithIdentificationNumberId, DemoUsersSeed.PettySmithWithIdentificationNumberId, 1, 1)]
         public async Task CalculateProbabilityForDemoUser(string first, string second, decimal expected, int contributorsCount)
         {
-            var url = $"/api/people/probability-same-identity?firstPersonId={first}&secondPersonId={second}";
+            // Arrange
+            var strategyId = await GetStrategyId();
+            var url = $"/api/people/probability-same-identity?firstPersonId={first}&secondPersonId={second}&strategyId={strategyId}";
+
+            // Act
             var result = await _httpClient.GetFromJsonAsync<ProbabilitySameIdentityDto>(url);
 
+            // Assert
             result.ShouldNotBeNull();
             result.Probability.ShouldBe(expected);
             result.Contributors.Count.ShouldBe(contributorsCount);
@@ -46,31 +48,37 @@ namespace IntegrationTests
         [Fact]
         public async Task Should_Throw_WhenProvidingInvalidStrategy()
         {
-            var url = $"/api/people/probability-same-identity?firstPersonId={AndrewCrawId}&secondPersonId={AndrewCraw2Id}&strategyName=NonExisting";
+            // Arrange
+            var url = $"/api/people/probability-same-identity?firstPersonId={DemoUsersSeed.AndrewCrawId}&secondPersonId={DemoUsersSeed.AndrewCraw2Id}&strategyId={Guid.NewGuid()}";
+
+            // Act
             var result = await _httpClient.GetAsync(url);
 
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-
-            var exception = await result.Content.ReadFromJsonAsync<ExceptionDto>();
-            exception.ShouldNotBeNull();
-            exception.Name.ShouldContain("StrategyNotFoundException");
+            // Assert
+            result.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         }
 
         [Theory]
-        [InlineData(AndrewCraw2Id, "6c922928-fe5f-417f-9017-d882b23be5cc")]
-        [InlineData("6c922928-fe5f-417f-9017-d882b23be5cc", AndrewCraw2Id)]
+        [InlineData(DemoUsersSeed.AndrewCraw2Id, "6c922928-fe5f-417f-9017-d882b23be5cc")]
+        [InlineData("6c922928-fe5f-417f-9017-d882b23be5cc", DemoUsersSeed.AndrewCraw2Id)]
         public async Task Should_Throw_WhenProvidingInvalidUsers(string user1, string user2)
         {
-            var url = $"/api/people/probability-same-identity?firstPersonId={user1}&secondPersonId={user2}";
+            // Arrange
+            var strategyId = await GetStrategyId();
+            var url = $"/api/people/probability-same-identity?firstPersonId={user1}&secondPersonId={user2}&strategyId={strategyId}";
+
+            // Act
             var result = await _httpClient.GetAsync(url);
 
-            result.ShouldNotBeNull();
-            result.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            // Assert
+            result.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        }
 
-            var exception = await result.Content.ReadFromJsonAsync<ExceptionDto>();
-            exception.ShouldNotBeNull();
-            exception.Name.ShouldContain("PersonNotFoundException");
+        private async Task<Guid> GetStrategyId()
+        {
+            var url = $"/api/strategies";
+            var result = await _httpClient.GetFromJsonAsync<List<StrategyDto>>(url);
+            return result!.Single().Id;
         }
     }
 }

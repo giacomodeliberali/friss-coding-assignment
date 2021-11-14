@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Rules;
 using Domain.Extensions;
@@ -30,9 +31,9 @@ namespace Application.Seed
         /// <inheritdoc />
         public async Task SeedAsync()
         {
-            var existingDefaultStrategy = await _matchingStrategyRepository.GetByNameAsync("Default");
+            var strategies = await _matchingStrategyRepository.GetAllAsync();
 
-            if (existingDefaultStrategy is not null)
+            if (strategies.Any())
             {
                 _logger.LogInformation("Existing strategy found. Skipping seed");
                 return;

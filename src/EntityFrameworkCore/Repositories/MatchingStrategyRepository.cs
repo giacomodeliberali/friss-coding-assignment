@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain;
 using Domain.Extensions;
 using Domain.Model;
 using Domain.Repositories;
@@ -138,16 +137,19 @@ namespace EntityFrameworkCore.Repositories
             return strategy;
         }
 
-        public async Task<MatchingStrategy> GetByNameAsync(string name)
+        /// <inheritdoc />
+        public async Task<List<MatchingStrategy>> GetAllAsync()
         {
-            var strategyData = await _applicationDbContext.PersonMatchingStrategies.SingleOrDefaultAsync(s => s.Name == name);
+            var result = new List<MatchingStrategy>();
+            var strategiesData = await _applicationDbContext.PersonMatchingStrategies.ToListAsync();
 
-            if (strategyData is null)
+            // Note: bad approach, it performs multiple queries
+            foreach (var strategyData in strategiesData)
             {
-                return null;
+                result.Add(await GetByIdAsync(strategyData.Id));
             }
 
-            return await GetByIdAsync(strategyData.Id);
+            return result;
         }
     }
 }

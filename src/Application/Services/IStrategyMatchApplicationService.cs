@@ -28,21 +28,27 @@ namespace Application.Services
         Task<StrategyDto> GetByIdAsync(Guid strategyId);
 
         /// <summary>
+        /// Returns the list of available strategies.
+        /// </summary>
+        /// <returns>The list of available strategies.</returns>
+        Task<IEnumerable<StrategyDto>> GetAllAsync();
+
+        /// <summary>
         /// Deletes an existing strategy.
         /// </summary>
         /// <param name="strategyId">The strategy to delete.</param>
-        Task DeleteStrategyAsync(Guid strategyId);
+        Task<bool> DeleteStrategyAsync(Guid strategyId);
 
         /// <summary>
         /// Updates an existing strategy.
         /// </summary>
         /// <param name="input">The strategy to update.</param>
-        Task UpdateStrategyAsync(UpdateStrategyDto input);
+        Task<bool> UpdateStrategyAsync(UpdateStrategyDto input);
 
         /// <summary>
         /// Returns the list of available <see cref="IRuleContributor"/> to compose a <see cref="MatchingStrategy"/>.
         /// </summary>
         /// <returns>The list of available rule types.</returns>
-        Task<List<RuleDto>> GetAvailableRulesAsync();
+        Task<IEnumerable<RuleDto>> GetAvailableRulesAsync();
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Contracts.Person;
@@ -23,11 +22,9 @@ namespace Application.Services
         /// <summary>
         /// Calculates the probability that the two given people are the same identity using the provided strategy.
         /// </summary>
-        /// <param name="firstPersonId">The first <see cref="Person"/> to compare.</param>
-        /// <param name="secondPersonId">The second <see cref="Person"/> to compare.</param>
-        /// <param name="strategyName">The name of the strategy to use.</param>
+        /// <param name="input">The dto with the <see cref="Person"/> to compare and the strategy to use.</param>
         /// <returns>The probability (0-1) the the two people's identities match.</returns>
-        Task<ProbabilitySameIdentityDto> CalculateProbabilitySameIdentity(Guid firstPersonId, Guid secondPersonId, string strategyName);
+        Task<ProbabilitySameIdentityDto> CalculateProbabilitySameIdentity(CalculateProbabilitySameIdentityRequestDto input);
 
         /// <summary>
         /// Returns all the created people.

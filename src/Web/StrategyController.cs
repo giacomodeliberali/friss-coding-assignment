@@ -5,33 +5,26 @@ using System.Threading.Tasks;
 using Application.Contracts;
 using Application.Contracts.Rules;
 using Application.Services;
-using Domain.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ValidationException = Domain.Exceptions.ValidationException;
 
 namespace Web
 {
     /// <summary>
     /// Manages the CRUD operations on the MatchingStrategy aggregate.
     /// </summary>
+    [ApiController]
     [Route("api/strategies")]
-    public class StrategyController : CustomBaseController
+    public class StrategyController : ControllerBase
     {
         private readonly IStrategyMatchApplicationService _strategyMatchApplicationService;
-        private readonly ILogger<StrategyController> _logger;
 
         /// <inheritdoc />
-        public StrategyController(
-            IHostingEnvironment hostingEnvironment,
-            IStrategyMatchApplicationService strategyMatchApplicationService,
-            ILogger<StrategyController> logger)
-            : base(hostingEnvironment)
+        public StrategyController(IStrategyMatchApplicationService strategyMatchApplicationService)
         {
             _strategyMatchApplicationService = strategyMatchApplicationService;
-            _logger = logger;
         }
 
         /// <summary>
@@ -40,26 +33,19 @@ namespace Web
         /// <param name="input">The strategy to create.</param>
         /// <returns>The created strategy's id.</returns>
         [ProducesResponseType(typeof(CreateStrategyReplyDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<IActionResult> CreateAsync([Required] CreateStrategyDto input)
         {
-            try
+            var result = await _strategyMatchApplicationService.CreateStrategy(input);
+
+            if (result is null)
             {
-                var result = await _strategyMatchApplicationService.CreateStrategy(input);
-                return Created(string.Empty, result);
+                return BadRequest();
             }
-            catch (ValidationException validationException)
-            {
-                _logger.LogDebug(validationException, "Invalid request parameters");
-                return BadRequest(validationException);
-            }
-            catch (BusinessException businessException)
-            {
-                _logger.LogWarning(businessException, "Error during strategy creation");
-                return ServerError(businessException);
-            }
+
+            return Created(string.Empty, result);
+
         }
 
         /// <summary>
@@ -67,29 +53,36 @@ namespace Web
         /// </summary>
         /// <param name="id">The strategy id.</param>
         /// <param name="input">The strategy to update.</param>
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(Guid id, [Required] UpdateStrategyDto input)
         {
             if (id != input.Id)
             {
-                return BadRequest(new ValidationException("Path id and body id do not match."));
+                return BadRequest();
             }
 
-            try
+            var isSuccessful = await _strategyMatchApplicationService.UpdateStrategyAsync(input);
+
+            if(isSuccessful)
             {
-                await _strategyMatchApplicationService.UpdateStrategyAsync(input);
                 return Ok();
             }
-            catch (ValidationException validationException)
-            {
-                _logger.LogDebug(validationException, "Invalid request parameters");
-                return BadRequest(validationException);
-            }
-            catch (BusinessException businessException)
-            {
-                _logger.LogWarning(businessException, "Error during strategy update");
-                return ServerError(businessException);
-            }
+
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Returns the list of strategies.
+        /// </summary>
+        /// <returns>The list of strategies.</returns>
+        [ProducesResponseType(typeof(List<StrategyDto>), StatusCodes.Status200OK)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var result = await _strategyMatchApplicationService.GetAllAsync();
+            return Ok(result);
         }
 
         /// <summary>
@@ -106,7 +99,6 @@ namespace Web
 
             if (result is null)
             {
-                _logger.LogDebug("Strategy with id '{Id}' not found", id);
                 return NotFound();
             }
 
@@ -119,19 +111,18 @@ namespace Web
         /// <param name="id">The strategy to delete.</param>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteByIdAsync(Guid id)
         {
-            try
+            var isSuccessful = await _strategyMatchApplicationService.DeleteStrategyAsync(id);
+
+            if (isSuccessful)
             {
-                await _strategyMatchApplicationService.DeleteStrategyAsync(id);
                 return NoContent();
             }
-            catch (BusinessException businessException)
-            {
-                _logger.LogWarning(businessException, "Error deleting strategy with id '{Id}'", id);
-                return ServerError(businessException);
-            }
+
+            return BadRequest();
+
         }
 
         /// <summary>
@@ -139,7 +130,6 @@ namespace Web
         /// </summary>
         /// <returns></returns>
         [ProducesResponseType(typeof(List<RuleDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ExceptionDto), StatusCodes.Status500InternalServerError)]
         [HttpGet("available-rules")]
         public async Task<IActionResult> GetAvailableRulesAsync()
         {

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using Application;
+using Application.Cache;
 using Application.Contracts;
 using Domain.Exceptions;
 using EntityFrameworkCore;
@@ -55,6 +56,9 @@ namespace Web.Host
             {
                 options.UseSqlite(Configuration.GetConnectionString("Default"));
             });
+
+            services.AddMemoryCache();
+            services.AddSingleton<ICustomMemoryCache, CustomMemoryCache>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

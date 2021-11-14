@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Application.Contracts.Person
@@ -8,6 +9,8 @@ namespace Application.Contracts.Person
 
         public List<ContributorDto> Contributors { get; set; }
 
+        public StrategyDto Strategy { get; set; }
+
         public record ContributorDto
         {
             public string Name { get; set; }
@@ -17,6 +20,15 @@ namespace Application.Contracts.Person
             public string RuleType { get; set; }
 
             public decimal Value { get; set; }
+        }
+
+        public record StrategyDto
+        {
+            public Guid Id { get; set; }
+
+            public string Name { get; set; }
+
+            public string Description { get; set; }
         }
     }
 }
