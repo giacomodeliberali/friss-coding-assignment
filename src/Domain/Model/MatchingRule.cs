@@ -16,7 +16,7 @@ namespace Domain.Model
     /// is invoked at run time. The actual code is inside the Application layer as it might have dependencies
     /// that would need to be resolved with the DI container.
     ///
-    /// A rule type can be any class implementing the <see cref="IRuleContributor"/> interface.
+    /// A rule type can be any class implementing the <see cref="IMatchingRuleContributor"/> interface.
     /// </summary>
     public class MatchingRule : Entity
     {
@@ -36,7 +36,7 @@ namespace Domain.Model
         public bool IsEnabled { get; protected set; }
 
         /// <summary>
-        /// The actual type of this rule, which implements the <see cref="IRuleContributor"/> interface.
+        /// The actual type of this rule, which implements the <see cref="IMatchingRuleContributor"/> interface.
         /// This type will be resolved from DI when invoking this rule and run through the execution pipeline defined in the <see cref="IMatchingRuleStrategyExecutor"/>.
         /// </summary>
         public Type RuleType { get; private set; }
@@ -85,13 +85,13 @@ namespace Domain.Model
             /// <summary>
             /// Creates a new <see cref="MatchingRule"/>.
             /// </summary>
-            /// <param name="ruleTypeAssemblyQualifiedName">The assembly qualified name of the rule type that implements the <see cref="IRuleContributor"/> interface.</param>
+            /// <param name="ruleTypeAssemblyQualifiedName">The assembly qualified name of the rule type that implements the <see cref="IMatchingRuleContributor"/> interface.</param>
             /// <param name="name">The rule friendly name.</param>
             /// <param name="description">The rule description.</param>
             /// <param name="isEnabled">Indicates if this rule is enabled ot nor. If the rule is disabled it will be skipped during pipeline invocation.</param>
             /// <param name="parameters">The rule parameters.</param>
             /// <returns>The new <see cref="MatchingRule"/></returns>
-            /// <exception cref="InvalidRuleTypeException">When the <paramref name="ruleTypeAssemblyQualifiedName"/> does not resolve or does not implement the <see cref="IRuleContributor"/> interface</exception>
+            /// <exception cref="InvalidRuleTypeException">When the <paramref name="ruleTypeAssemblyQualifiedName"/> does not resolve or does not implement the <see cref="IMatchingRuleContributor"/> interface</exception>
             /// <exception cref="ValidationException">When parameters are not valid.</exception>
             public static MatchingRule Create(
                 string ruleTypeAssemblyQualifiedName,
@@ -146,7 +146,7 @@ namespace Domain.Model
             /// <param name="snapshot">The write model snapshot.</param>
             /// <param name="parameters">The write model parameters snapshots.</param>
             /// <returns>The <see cref="MatchingRule"/></returns>
-            /// <exception cref="InvalidRuleTypeException">When the <paramref name="snapshot"/>.RuleType does not resolve or does not implement the <see cref="IRuleContributor"/> interface</exception>
+            /// <exception cref="InvalidRuleTypeException">When the <paramref name="snapshot"/>.RuleType does not resolve or does not implement the <see cref="IMatchingRuleContributor"/> interface</exception>
             public static MatchingRule FromSnapshot(
                 MatchingRuleData snapshot,
                 List<MatchingRuleParameterData> parameters)

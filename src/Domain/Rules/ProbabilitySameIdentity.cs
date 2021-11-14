@@ -11,6 +11,16 @@ namespace Domain.Rules
     /// </summary>
     public class ProbabilitySameIdentity
     {
+        /// <summary>
+        /// Represents the value that indicates that there is a match with probability 1 (100%) between the two <see cref="Person"/>.
+        /// </summary>
+        public const decimal Match = 1;
+
+        /// <summary>
+        /// Represents the value that indicates that there is no match (0%) between the two <see cref="Person"/>.
+        /// </summary>
+        public const decimal NoMatch = 0;
+
         private readonly List<Contributor> _contributors;
 
         /// <summary>
@@ -28,7 +38,7 @@ namespace Domain.Rules
         /// </summary>
         /// <param name="initialProbability">The initial probability (default 0)</param>
         /// <exception cref="ValidationException">When the provided <paramref name="initialProbability"/> is not in the 0-1 range.</exception>
-        public ProbabilitySameIdentity(decimal initialProbability = MatchingProbabilityConstants.NoMatch)
+        public ProbabilitySameIdentity(decimal initialProbability = NoMatch)
         {
             if (initialProbability < 0)
             {
@@ -56,8 +66,8 @@ namespace Domain.Rules
             Probability = Math.Max(
                 Math.Min(
                     Probability + value,
-                    MatchingProbabilityConstants.Match),
-                MatchingProbabilityConstants.NoMatch);
+                    Match),
+                NoMatch);
 
             _contributors.Add(new Contributor(rule, value));
         }
@@ -67,10 +77,10 @@ namespace Domain.Rules
         /// </summary>
         /// <param name="rule">The rule that moved the probability to zero.</param>
         /// <returns>The new probability set to 0.</returns>
-        public ProbabilitySameIdentity NoMatch(MatchingRule rule)
+        public ProbabilitySameIdentity SetNoMatch(MatchingRule rule)
         {
-            Probability = MatchingProbabilityConstants.NoMatch;
-            _contributors.Add(new Contributor(rule, MatchingProbabilityConstants.NoMatch));
+            Probability = NoMatch;
+            _contributors.Add(new Contributor(rule, NoMatch));
             return this;
         }
 
@@ -79,10 +89,10 @@ namespace Domain.Rules
         /// </summary>
         /// <param name="rule">The rule that moved the probability to one.</param>
         /// <returns>The new probability set to 1.</returns>
-        public ProbabilitySameIdentity Match(MatchingRule rule)
+        public ProbabilitySameIdentity SetMatch(MatchingRule rule)
         {
-            Probability = MatchingProbabilityConstants.Match;
-            _contributors.Add(new Contributor(rule, MatchingProbabilityConstants.Match));
+            Probability = Match;
+            _contributors.Add(new Contributor(rule, Match));
             return this;
         }
 
@@ -92,7 +102,7 @@ namespace Domain.Rules
         /// <returns>True if the current probability is 1.</returns>
         public bool IsMatch()
         {
-            return Probability == MatchingProbabilityConstants.Match;
+            return Probability == Match;
         }
 
         /// <summary>

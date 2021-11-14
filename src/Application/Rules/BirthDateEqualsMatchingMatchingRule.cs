@@ -10,9 +10,9 @@ namespace Application.Rules
     /// This rule add 40% if birth dates match or interrupt the pipeline if both birth dates are known and different.
     /// </summary>
     [RuleParameter(IncreaseProbabilityWhenBirthDateMatches, "The probability to add when birthdates match.")]
-    public class BirthDateEqualsMatchingRule : IRuleContributor
+    public class BirthDateEqualsMatchingMatchingRule : IMatchingRuleContributor
     {
-        private readonly ILogger<BirthDateEqualsMatchingRule> _logger;
+        private readonly ILogger<BirthDateEqualsMatchingMatchingRule> _logger;
 
         /// <summary>
         /// The name of the parameter to adjust the probability to add when birthdates match.
@@ -22,7 +22,7 @@ namespace Application.Rules
         /// <summary>
         /// Creates the rule.
         /// </summary>
-        public BirthDateEqualsMatchingRule(ILogger<BirthDateEqualsMatchingRule> logger)
+        public BirthDateEqualsMatchingMatchingRule(ILogger<BirthDateEqualsMatchingMatchingRule> logger)
         {
             _logger = logger;
         }
@@ -45,7 +45,7 @@ namespace Application.Rules
                         first.BirthDate.Value.Date,
                         second.BirthDate.Value.Date);
 
-                    return currentProbability.NoMatch(rule);
+                    return currentProbability.SetNoMatch(rule);
                 }
 
                 var increaseProbabilityWhenBirthDatesMatch = rule.GetParameterOrDefault(IncreaseProbabilityWhenBirthDateMatches, defaultValue: 0.4m);

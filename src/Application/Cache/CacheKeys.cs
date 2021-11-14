@@ -38,7 +38,7 @@ namespace Application.Cache
         }
 
         /// <summary>
-        /// Cache key for available list of <see cref="IRuleContributor"/>.
+        /// Cache key for available list of <see cref="IMatchingRuleContributor"/>.
         /// </summary>
         public const string AvailableRules = nameof(AvailableRules);
     }

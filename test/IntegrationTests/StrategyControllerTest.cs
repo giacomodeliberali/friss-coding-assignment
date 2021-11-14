@@ -35,10 +35,10 @@ namespace IntegrationTests
             result.ShouldNotBeNull();
             result.Count.ShouldBe(4);
             var rules = result.Select(r => r.AssemblyQualifiedName).ToList();
-            rules.Contains(typeof(FirstNameMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
-            rules.Contains(typeof(LastNameMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
-            rules.Contains(typeof(BirthDateEqualsMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
-            rules.Contains(typeof(IdentificationNumberEqualsMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
+            rules.Contains(typeof(FirstNameMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
+            rules.Contains(typeof(LastNameMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
+            rules.Contains(typeof(BirthDateEqualsMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
+            rules.Contains(typeof(IdentificationNumberEqualsMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
         }
     }
 }

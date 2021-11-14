@@ -12,9 +12,9 @@ namespace Application.Rules
     /// </summary>
     [RuleParameter(IncreaseProbabilityWhenEqualsFirstNames, "The probability to add for a first name exact match.")]
     [RuleParameter(IncreaseProbabilityWhenSimilarFirstNames, "The probability to add for a first name similarity match.")]
-    public class FirstNameMatchingRule : IRuleContributor
+    public class FirstNameMatchingMatchingRule : IMatchingRuleContributor
     {
-        private readonly ILogger<FirstNameMatchingRule> _logger;
+        private readonly ILogger<FirstNameMatchingMatchingRule> _logger;
 
         /// <summary>
         /// The name of the parameter to adjust the probability to add for a first name exact match.
@@ -29,7 +29,7 @@ namespace Application.Rules
         /// <summary>
         /// Creates the rule.
         /// </summary>
-        public FirstNameMatchingRule(ILogger<FirstNameMatchingRule> logger)
+        public FirstNameMatchingMatchingRule(ILogger<FirstNameMatchingMatchingRule> logger)
         {
             _logger = logger;
         }

@@ -11,7 +11,7 @@ namespace UnitTests.Rules
         /// </summary>
         protected readonly NextMatchingRuleDelegate NextMatchingRuleDelegate;
 
-        public RuleBaseTest()
+        protected RuleBaseTest()
         {
             NextMatchingRuleDelegate = Substitute.For<NextMatchingRuleDelegate>();
 

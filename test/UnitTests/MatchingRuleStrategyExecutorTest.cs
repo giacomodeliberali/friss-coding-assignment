@@ -26,9 +26,9 @@ namespace UnitTests
             var serviceProvider = Substitute.For<IServiceProvider>();
 
             // mock rules
-            serviceProvider.GetService(typeof(AlwaysMatchingAndReturnRule)).Returns(new AlwaysMatchingAndReturnRule());
-            serviceProvider.GetService(typeof(AlwaysNonMatchAndReturnRule)).Returns(new AlwaysNonMatchAndReturnRule());
-            serviceProvider.GetService(typeof(AlwaysAdd50Rule)).Returns(new AlwaysAdd50Rule());
+            serviceProvider.GetService(typeof(AlwaysMatchingAndReturnMatchingRule)).Returns(new AlwaysMatchingAndReturnMatchingRule());
+            serviceProvider.GetService(typeof(AlwaysNonMatchAndReturnMatchingRule)).Returns(new AlwaysNonMatchAndReturnMatchingRule());
+            serviceProvider.GetService(typeof(AlwaysAdd50MatchingRule)).Returns(new AlwaysAdd50MatchingRule());
 
             _sut = new MatchingRuleStrategyExecutor(serviceProvider, logger);
 
@@ -55,8 +55,8 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysMatchingAndReturnRule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysMatchingAndReturnRule),
+                        typeof(AlwaysMatchingAndReturnMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysMatchingAndReturnMatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>())
@@ -66,7 +66,7 @@ namespace UnitTests
             var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.Match);
             probabilitySameIdentity.Contributors.Count.ShouldBe(1);
         }
 
@@ -80,14 +80,14 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysMatchingAndReturnRule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysMatchingAndReturnRule),
+                        typeof(AlwaysMatchingAndReturnMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysMatchingAndReturnMatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysNonMatchAndReturnRule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysNonMatchAndReturnRule),
+                        typeof(AlwaysNonMatchAndReturnMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysNonMatchAndReturnMatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>())
@@ -97,7 +97,7 @@ namespace UnitTests
             var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.Match);
             probabilitySameIdentity.Contributors.Count.ShouldBe(1);
         }
 
@@ -111,14 +111,14 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysMatchingAndReturnRule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysMatchingAndReturnRule),
+                        typeof(AlwaysMatchingAndReturnMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysMatchingAndReturnMatchingRule),
                         "description",
                         isEnabled: false, // disabled rule
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysNonMatchAndReturnRule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysNonMatchAndReturnRule),
+                        typeof(AlwaysNonMatchAndReturnMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysNonMatchAndReturnMatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>())
@@ -128,7 +128,7 @@ namespace UnitTests
             var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.NoMatch);
             probabilitySameIdentity.Contributors.Count.ShouldBe(1);        }
 
         [Fact]
@@ -141,8 +141,8 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(RuleNonRegisteredInDiContainer).GetAssemblyQualifiedName(),
-                        nameof(RuleNonRegisteredInDiContainer),
+                        typeof(MatchingRuleNonRegisteredInDiContainer).GetAssemblyQualifiedName(),
+                        nameof(MatchingRuleNonRegisteredInDiContainer),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>()),
@@ -165,20 +165,20 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: true,
                         new List<MatchingRuleParameter>()),
@@ -188,7 +188,7 @@ namespace UnitTests
             var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.Match);
             probabilitySameIdentity.Contributors.Count.ShouldBe(2);
         }
 
@@ -202,20 +202,20 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: false,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: false,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: false,
                         new List<MatchingRuleParameter>()),
@@ -225,7 +225,7 @@ namespace UnitTests
             var probabilitySameIdentity = await _sut.ExecuteAsync(strategy, _person1, _person2);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.NoMatch);
             probabilitySameIdentity.Contributors.Count.ShouldBe(0);
         }
 
@@ -239,8 +239,8 @@ namespace UnitTests
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(AlwaysAdd50Rule).GetAssemblyQualifiedName(),
-                        nameof(AlwaysAdd50Rule),
+                        typeof(AlwaysAdd50MatchingRule).GetAssemblyQualifiedName(),
+                        nameof(AlwaysAdd50MatchingRule),
                         "description",
                         isEnabled: false,
                         new List<MatchingRuleParameter>()),
@@ -265,34 +265,34 @@ namespace UnitTests
 
         // Mock rules
 
-        public class AlwaysMatchingAndReturnRule : IRuleContributor
+        public class AlwaysMatchingAndReturnMatchingRule : IMatchingRuleContributor
         {
             public Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return Task.FromResult(currentProbability.Match(rule));
+                return Task.FromResult(currentProbability.SetMatch(rule));
             }
         }
 
-        public class AlwaysNonMatchAndReturnRule : IRuleContributor
+        public class AlwaysNonMatchAndReturnMatchingRule : IMatchingRuleContributor
         {
             public Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return Task.FromResult(currentProbability.NoMatch(rule));
+                return Task.FromResult(currentProbability.SetNoMatch(rule));
             }
         }
 
-        public class RuleNonRegisteredInDiContainer : IRuleContributor
+        public class MatchingRuleNonRegisteredInDiContainer : IMatchingRuleContributor
         {
             public Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)
             {
-                return Task.FromResult(currentProbability.NoMatch(rule));
+                return Task.FromResult(currentProbability.SetNoMatch(rule));
             }
         }
 
-        public class AlwaysAdd50Rule : IRuleContributor
+        public class AlwaysAdd50MatchingRule : IMatchingRuleContributor
         {
             public async Task<ProbabilitySameIdentity> MatchAsync(MatchingRule rule, Person first, Person second, ProbabilitySameIdentity currentProbability,
                 NextMatchingRuleDelegate next)

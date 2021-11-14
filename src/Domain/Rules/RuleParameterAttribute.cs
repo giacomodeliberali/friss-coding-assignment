@@ -19,7 +19,7 @@ namespace Domain.Rules
         public string ParameterDescription { get; }
 
         /// <summary>
-        /// Specifies that this <see cref="IRuleContributor"/> allow the following parameter.
+        /// Specifies that this <see cref="IMatchingRuleContributor"/> allow the following parameter.
         /// </summary>
         /// <param name="parameterName">The parameter name.</param>
         /// <param name="parameterDescription">The parameter description.</param>

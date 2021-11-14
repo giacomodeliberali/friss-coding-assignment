@@ -46,7 +46,7 @@ namespace Application.Services
         Task<bool> UpdateStrategyAsync(UpdateStrategyDto input);
 
         /// <summary>
-        /// Returns the list of available <see cref="IRuleContributor"/> to compose a <see cref="MatchingStrategy"/>.
+        /// Returns the list of available <see cref="IMatchingRuleContributor"/> to compose a <see cref="MatchingStrategy"/>.
         /// </summary>
         /// <returns>The list of available rule types.</returns>
         Task<IEnumerable<RuleDto>> GetAvailableRulesAsync();

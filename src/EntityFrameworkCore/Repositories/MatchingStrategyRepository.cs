@@ -20,6 +20,7 @@ namespace EntityFrameworkCore.Repositories
             _applicationDbContext = applicationDbContext;
         }
 
+        /// <inheritdoc />
         public async Task<Guid> CreateAsync(MatchingStrategy strategy)
         {
             await CreateStrategyInternal(strategy);
@@ -81,12 +82,13 @@ namespace EntityFrameworkCore.Repositories
             await _applicationDbContext.PersonMatchingRulesParameters.AddRangeAsync(rulesParameterData);
         }
 
+        /// <inheritdoc />
         public async Task UpdateAsync(MatchingStrategy strategy)
         {
             // delete rules and parameters
             var rulesData = await _applicationDbContext.PersonMatchingRules.Where(r => r.StrategyId == strategy.Id).ToListAsync();
             var rulesIds = rulesData.Select(r => r.Id).ToList();
-            var parametersData =await _applicationDbContext.PersonMatchingRulesParameters.Where(p => rulesIds.Contains(p.RuleId)).ToListAsync();
+            var parametersData = await _applicationDbContext.PersonMatchingRulesParameters.Where(p => rulesIds.Contains(p.RuleId)).ToListAsync();
 
             _applicationDbContext.PersonMatchingRules.RemoveRange(rulesData);
             _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(parametersData);
@@ -94,15 +96,19 @@ namespace EntityFrameworkCore.Repositories
             await CreateMatchingRulesInternal(strategy);
         }
 
-        public async Task DeleteAsync(MatchingStrategy strategy)
+        /// <inheritdoc />
+        public Task DeleteAsync(MatchingStrategy strategy)
         {
             _applicationDbContext.PersonMatchingStrategies.Remove(strategy.Snapshot);
 
             // delete rules and parameters
             _applicationDbContext.PersonMatchingRules.RemoveRange(strategy.Rules.Select(r => r.Snapshot));
             _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(strategy.Rules.SelectMany(r => r.Parameters.Select(p => p.Snapshot)));
+
+            return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public async Task<MatchingStrategy> GetByIdAsync(Guid id)
         {
             var strategyData = await _applicationDbContext.PersonMatchingStrategies
@@ -146,6 +152,7 @@ namespace EntityFrameworkCore.Repositories
             return result;
         }
 
+        /// <inheritdoc />
         public async Task SaveChangesAsync()
         {
             await _applicationDbContext.SaveChangesAsync();

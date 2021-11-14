@@ -15,7 +15,7 @@ namespace UnitTests.Domain
         public ProbabilitySameIdentityTest()
         {
             _matchingRule = MatchingRule.Factory.Create(
-                typeof(MatchingRuleStrategyExecutorTest.AlwaysMatchingAndReturnRule).GetAssemblyQualifiedName(),
+                typeof(MatchingRuleStrategyExecutorTest.AlwaysMatchingAndReturnMatchingRule).GetAssemblyQualifiedName(),
                 "name",
                 "description",
                 isEnabled: true,
@@ -40,7 +40,7 @@ namespace UnitTests.Domain
             var sut = new ProbabilitySameIdentity();
 
             // Act & Assert
-            sut.Probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            sut.Probability.ShouldBe(ProbabilitySameIdentity.NoMatch);
             sut.IsMatch().ShouldBe(false);
         }
 
@@ -51,7 +51,7 @@ namespace UnitTests.Domain
             var sut = new ProbabilitySameIdentity(1);
 
             // Act & Assert
-            sut.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            sut.Probability.ShouldBe(ProbabilitySameIdentity.Match);
             sut.IsMatch().ShouldBe(true);
         }
 

@@ -14,13 +14,13 @@ namespace UnitTests.Rules
 {
     public class FirstNameMatchingRuleTest : RuleBaseTest
     {
-        private readonly FirstNameMatchingRule _sut;
+        private readonly FirstNameMatchingMatchingRule _sut;
 
         public FirstNameMatchingRuleTest()
         {
-            var logger = Substitute.For<ILogger<FirstNameMatchingRule>>();
+            var logger = Substitute.For<ILogger<FirstNameMatchingMatchingRule>>();
 
-            _sut = new FirstNameMatchingRule(logger);
+            _sut = new FirstNameMatchingMatchingRule(logger);
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, providedMatchProbability),
+                    MatchingRuleParameter.Factory.Create(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, providedMatchProbability),
                 });
 
             // Act
@@ -155,7 +155,7 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenSimilarFirstNames, providedSimilarityProbability),
+                    MatchingRuleParameter.Factory.Create(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenSimilarFirstNames, providedSimilarityProbability),
                 });
 
             // Act

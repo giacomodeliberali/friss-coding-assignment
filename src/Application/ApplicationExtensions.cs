@@ -30,7 +30,7 @@ namespace Application
 
         private static void AddRuleTypes(this IServiceCollection serviceCollection)
         {
-            var ruleContributorType = typeof(IRuleContributor);
+            var ruleContributorType = typeof(IMatchingRuleContributor);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .AsParallel()
                 .SelectMany(x => x.GetTypes())

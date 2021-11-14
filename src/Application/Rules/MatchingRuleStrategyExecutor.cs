@@ -38,7 +38,7 @@ namespace Application.Rules
             if (first.Id == second.Id)
             {
                 _logger.LogDebug("People have the same id, terminating pipeline");
-                return new ProbabilitySameIdentity(MatchingProbabilityConstants.Match);
+                return new ProbabilitySameIdentity(initialProbability: ProbabilitySameIdentity.Match);
             }
 
             NextMatchingRuleDelegate finalNext = (finalScore) =>
@@ -70,7 +70,7 @@ namespace Application.Rules
 
                             if (currentRule.IsEnabled)
                             {
-                                var ruleContributor = (IRuleContributor)_serviceProvider.GetService(currentRule.RuleType);
+                                var ruleContributor = (IMatchingRuleContributor)_serviceProvider.GetService(currentRule.RuleType);
 
                                 if (ruleContributor is null)
                                 {

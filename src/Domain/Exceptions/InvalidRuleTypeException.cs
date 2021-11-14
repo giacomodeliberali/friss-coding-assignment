@@ -3,7 +3,7 @@ using Domain.Rules;
 namespace Domain.Exceptions
 {
     /// <summary>
-    /// Thrown when the rule type if not resolvable or does not implement the <see cref="IRuleContributor"/> interface.
+    /// Thrown when the rule type if not resolvable or does not implement the <see cref="IMatchingRuleContributor"/> interface.
     /// </summary>
     public class InvalidRuleTypeException : ValidationException
     {

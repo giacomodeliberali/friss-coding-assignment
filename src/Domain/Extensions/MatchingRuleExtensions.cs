@@ -26,13 +26,13 @@ namespace Domain.Extensions
         }
 
         /// <summary>
-        /// Returns true if the provided type is a valid rule type (a class that implements the <see cref="IRuleContributor"/> interface).
+        /// Returns true if the provided type is a valid rule type (a class that implements the <see cref="IMatchingRuleContributor"/> interface).
         /// </summary>
         /// <param name="ruleType">The type to check.</param>
-        /// <returns>True if the type inherits from <see cref="IRuleContributor"/>, false otherwise.</returns>
+        /// <returns>True if the type inherits from <see cref="IMatchingRuleContributor"/>, false otherwise.</returns>
         public static bool IsValidRuleType(this Type ruleType)
         {
-            return ruleType is not null && typeof(IRuleContributor).IsAssignableFrom(ruleType);
+            return ruleType is not null && typeof(IMatchingRuleContributor).IsAssignableFrom(ruleType);
         }
 
         /// <summary>

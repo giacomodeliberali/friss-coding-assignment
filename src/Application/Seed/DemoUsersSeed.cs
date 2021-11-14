@@ -39,6 +39,7 @@ namespace Application.Seed
         /// <inheritdoc />
         public async Task SeedAsync()
         {
+            // Note: we should check only interested ids and not load the entire table in memory!
             var people = await _personRepository.GetAllAsync();
 
             if (people.All(p => p.Id != AndrewCrawId.ToGuid()))

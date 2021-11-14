@@ -14,13 +14,13 @@ namespace UnitTests.Rules
 {
     public class IdentificationNumberEqualsMatchingRuleTest : RuleBaseTest
     {
-        private readonly IdentificationNumberEqualsMatchingRule _sut;
+        private readonly IdentificationNumberEqualsMatchingMatchingRule _sut;
 
         public IdentificationNumberEqualsMatchingRuleTest()
         {
-            var logger = Substitute.For<ILogger<IdentificationNumberEqualsMatchingRule>>();
+            var logger = Substitute.For<ILogger<IdentificationNumberEqualsMatchingMatchingRule>>();
 
-            _sut = new IdentificationNumberEqualsMatchingRule(logger);
+            _sut = new IdentificationNumberEqualsMatchingMatchingRule(logger);
         }
 
         [Fact]
@@ -52,9 +52,10 @@ namespace UnitTests.Rules
             var probabilitySameIdentity = await _sut.MatchAsync(rule, person1, person2, new ProbabilitySameIdentity(), NextMatchingRuleDelegate);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.Match);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.Match);
+            probabilitySameIdentity.IsMatch().ShouldBe(true);
             probabilitySameIdentity.Contributors.Count.ShouldBe(1);
-            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(0);
+            NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(0); // should interrupt the pipeline by not calling the next
         }
 
         [Fact]

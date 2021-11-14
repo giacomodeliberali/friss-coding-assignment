@@ -173,7 +173,7 @@ namespace Application.Services
                 return Task.FromResult((IEnumerable<RuleDto>)cachedRules);
             }
 
-            var ruleContributorType = typeof(IRuleContributor);
+            var ruleContributorType = typeof(IMatchingRuleContributor);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .AsParallel()
                 .SelectMany(x => x.GetTypes())

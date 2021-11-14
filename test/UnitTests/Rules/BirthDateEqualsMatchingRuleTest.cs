@@ -15,13 +15,13 @@ namespace UnitTests.Rules
 {
     public class BirthDateEqualsMatchingRuleTest : RuleBaseTest
     {
-        private readonly BirthDateEqualsMatchingRule _sut;
+        private readonly BirthDateEqualsMatchingMatchingRule _sut;
 
         public BirthDateEqualsMatchingRuleTest()
         {
-            var logger = Substitute.For<ILogger<BirthDateEqualsMatchingRule>>();
+            var logger = Substitute.For<ILogger<BirthDateEqualsMatchingMatchingRule>>();
 
-            _sut = new BirthDateEqualsMatchingRule(logger);
+            _sut = new BirthDateEqualsMatchingMatchingRule(logger);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create(BirthDateEqualsMatchingRule.IncreaseProbabilityWhenBirthDateMatches, providedMatchProbability),
+                    MatchingRuleParameter.Factory.Create(BirthDateEqualsMatchingMatchingRule.IncreaseProbabilityWhenBirthDateMatches, providedMatchProbability),
                 });
 
             // Act
@@ -126,7 +126,7 @@ namespace UnitTests.Rules
             var probabilitySameIdentity = await _sut.MatchAsync(rule, person1, person2, new ProbabilitySameIdentity(), NextMatchingRuleDelegate);
 
             // Assert
-            probabilitySameIdentity.Probability.ShouldBe(MatchingProbabilityConstants.NoMatch);
+            probabilitySameIdentity.Probability.ShouldBe(ProbabilitySameIdentity.NoMatch);
             probabilitySameIdentity.Contributors.Count.ShouldBe(1);
             NextMatchingRuleDelegate.ReceivedCalls().Count().ShouldBe(0);
         }

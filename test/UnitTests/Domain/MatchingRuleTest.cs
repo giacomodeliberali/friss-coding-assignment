@@ -48,7 +48,7 @@ namespace UnitTests.Domain
             Should.Throw<InvalidParameterException>(() =>
             {
                 var sut = MatchingRule.Factory.Create(
-                    typeof(FirstNameMatchingRule).GetAssemblyQualifiedName(),
+                    typeof(FirstNameMatchingMatchingRule).GetAssemblyQualifiedName(),
                     "name",
                     "description",
                     isEnabled: true,
@@ -64,22 +64,22 @@ namespace UnitTests.Domain
         {
             // Arrange
             var sut = MatchingRule.Factory.Create(
-                typeof(FirstNameMatchingRule).GetAssemblyQualifiedName(),
+                typeof(FirstNameMatchingMatchingRule).GetAssemblyQualifiedName(),
                 "name",
                 "description",
                 isEnabled: false,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.05m)
+                    MatchingRuleParameter.Factory.Create(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.05m)
                 });
 
             // Act & Assert
             sut.Name.ShouldBe("name");
             sut.Description.ShouldBe("description");
             sut.IsEnabled.ShouldBe(false);
-            sut.RuleType.ShouldBe(typeof(FirstNameMatchingRule));
+            sut.RuleType.ShouldBe(typeof(FirstNameMatchingMatchingRule));
             sut.Parameters.Count.ShouldBe(1);
-            sut.Parameters.Single().Name.ShouldBe(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames);
+            sut.Parameters.Single().Name.ShouldBe(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenEqualsFirstNames);
             sut.Parameters.Single().Value.ShouldBe(0.05m);
         }
 
@@ -90,15 +90,15 @@ namespace UnitTests.Domain
             Should.Throw<DuplicatedParametersException>(() =>
             {
                 var sut = MatchingRule.Factory.Create(
-                    typeof(FirstNameMatchingRule).GetAssemblyQualifiedName(),
+                    typeof(FirstNameMatchingMatchingRule).GetAssemblyQualifiedName(),
                     "name",
                     "description",
                     isEnabled: false,
                     new List<MatchingRuleParameter>()
                     {
-                        MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.05m),
-                        MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.08m),
-                        MatchingRuleParameter.Factory.Create(FirstNameMatchingRule.IncreaseProbabilityWhenSimilarFirstNames, 0.08m),
+                        MatchingRuleParameter.Factory.Create(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.05m),
+                        MatchingRuleParameter.Factory.Create(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenEqualsFirstNames, 0.08m),
+                        MatchingRuleParameter.Factory.Create(FirstNameMatchingMatchingRule.IncreaseProbabilityWhenSimilarFirstNames, 0.08m),
                     });
             });
         }
