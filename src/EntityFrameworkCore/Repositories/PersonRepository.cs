@@ -18,6 +18,7 @@ namespace EntityFrameworkCore.Repositories
             _applicationDbContext = applicationDbContext;
         }
 
+        /// <inheritdoc />
         public async Task CreateAsync(Person person)
         {
             var personData = new PersonData()
@@ -30,16 +31,14 @@ namespace EntityFrameworkCore.Repositories
             };
 
             await _applicationDbContext.People.AddAsync(personData);
-
-            // the saveChanges should be wrapped into a UnitOfWork and called by the application layer
-            await _applicationDbContext.SaveChangesAsync();
         }
 
+        /// <inheritdoc />
         public async Task<Person> GetByIdAsync(Guid id)
         {
             var personData = await _applicationDbContext.People.SingleOrDefaultAsync(p => p.Id == id);
 
-            if (personData == null)
+            if (personData is null)
             {
                 return null;
             }
@@ -47,10 +46,17 @@ namespace EntityFrameworkCore.Repositories
             return Person.Factory.FromSnapshot(personData);
         }
 
+        /// <inheritdoc />
         public async Task<List<Person>> GetAllAsync()
         {
             var peopleData = await _applicationDbContext.People.ToListAsync();
             return peopleData.Select(Person.Factory.FromSnapshot).ToList();
+        }
+
+        /// <inheritdoc />
+        public async Task SaveChangesAsync()
+        {
+            await _applicationDbContext.SaveChangesAsync();
         }
     }
 }

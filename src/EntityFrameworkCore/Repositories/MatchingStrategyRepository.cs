@@ -25,8 +25,6 @@ namespace EntityFrameworkCore.Repositories
             await CreateStrategyInternal(strategy);
             await CreateMatchingRulesInternal(strategy);
 
-            await _applicationDbContext.SaveChangesAsync();
-
             return strategy.Id;
         }
 
@@ -94,8 +92,6 @@ namespace EntityFrameworkCore.Repositories
             _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(parametersData);
 
             await CreateMatchingRulesInternal(strategy);
-
-            await _applicationDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(MatchingStrategy strategy)
@@ -105,8 +101,6 @@ namespace EntityFrameworkCore.Repositories
             // delete rules and parameters
             _applicationDbContext.PersonMatchingRules.RemoveRange(strategy.Rules.Select(r => r.Snapshot));
             _applicationDbContext.PersonMatchingRulesParameters.RemoveRange(strategy.Rules.SelectMany(r => r.Parameters.Select(p => p.Snapshot)));
-
-            await _applicationDbContext.SaveChangesAsync();
         }
 
         public async Task<MatchingStrategy> GetByIdAsync(Guid id)
@@ -150,6 +144,11 @@ namespace EntityFrameworkCore.Repositories
             }
 
             return result;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _applicationDbContext.SaveChangesAsync();
         }
     }
 }

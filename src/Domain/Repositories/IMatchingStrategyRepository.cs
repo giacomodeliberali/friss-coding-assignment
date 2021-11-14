@@ -7,8 +7,9 @@ namespace Domain.Repositories
 {
     /// <summary>
     /// The repository for the <see cref="MatchingStrategy"/> aggregate root.
+    /// Note: this should be implemented with a generic IRepository(Entity)
     /// </summary>
-    public interface IMatchingStrategyRepository
+    public interface IMatchingStrategyRepository : IBaseRepository
     {
         /// <summary>
         /// Creates a new <see cref="MatchingStrategy"/>.

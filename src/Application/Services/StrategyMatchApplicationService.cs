@@ -70,6 +70,7 @@ namespace Application.Services
                     rules);
 
                 await _strategyRepository.CreateAsync(strategy);
+                await _strategyRepository.SaveChangesAsync(); // simulate UnitOfWork
 
                 return new CreateStrategyReplyDto()
                 {
@@ -107,10 +108,11 @@ namespace Application.Services
                 return false;
             }
 
+            await _strategyRepository.DeleteAsync(strategy);
+            await _strategyRepository.SaveChangesAsync(); // simulate UnitOfWork
+
             // remove entry from cache. Note: this should be isolated in an handler that is listening for domain events (eg. MatchingStrategyDeletedEvent)!
             _memoryCache.RemoveIf(key => ((string) key).Contains(strategy.Id.ToString()));
-
-            await _strategyRepository.DeleteAsync(strategy);
 
             return true;
         }
@@ -148,9 +150,11 @@ namespace Application.Services
                     rules);
 
                 await _strategyRepository.UpdateAsync(strategy);
+                await _strategyRepository.SaveChangesAsync(); // simulate UnitOfWork
 
                 // remove entry from cache. Note: this should be isolated in an handler that is listening for domain events (eg. MatchingStrategyDeletedEvent)!
                 _memoryCache.RemoveIf(key => ((string) key).Contains(strategy.Id.ToString()));
+
 
                 return true;
             }
@@ -198,7 +202,7 @@ namespace Application.Services
                 rules.Add(ruleTypeDto);
             }
 
-            _memoryCache.Set(CacheKeys.AvailableRules, rules);
+            _memoryCache.Set(CacheKeys.AvailableRules, rules); // does not have a expire date as it saved in memory and it can change only after app restart
 
             return Task.FromResult((IEnumerable<RuleDto>)rules);
         }

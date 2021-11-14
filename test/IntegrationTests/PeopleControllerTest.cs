@@ -78,6 +78,8 @@ namespace IntegrationTests
         {
             var url = $"/api/strategies";
             var result = await _httpClient.GetFromJsonAsync<List<StrategyDto>>(url);
+            result.ShouldNotBeNull();
+            result.Count.ShouldBe(1);
             return result!.Single().Id;
         }
     }

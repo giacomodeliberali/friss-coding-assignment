@@ -7,8 +7,9 @@ namespace Domain.Repositories
 {
     /// <summary>
     /// The repository for the <see cref="Person"/>.
+    /// Note: this should be implemented with a generic IRepository(Entity)
     /// </summary>
-    public interface IPersonRepository
+    public interface IPersonRepository : IBaseRepository
     {
         /// <summary>
         /// Creates a new <see cref="Person"/>. If the operation fails an exception in thrown.

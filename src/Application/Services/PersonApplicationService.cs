@@ -51,6 +51,7 @@ namespace Application.Services
                     input.IdentificationNumber);
 
                 await _personRepository.CreateAsync(person);
+                await _personRepository.SaveChangesAsync(); // simulate UnitOfWork
 
                 return new CreatePersonReplyDto()
                 {

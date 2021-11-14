@@ -125,6 +125,8 @@ namespace Application.Seed
                 _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
             }
 
+            await _personRepository.SaveChangesAsync(); // simulate UnitOfWork
+
             _logger.LogInformation("People seed completed");
 
         }
