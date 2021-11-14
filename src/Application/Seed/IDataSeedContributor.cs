@@ -6,7 +6,7 @@ namespace Application.Seed
     /// Every class that has to seed some database data must implement this interface.
     /// <remarks>
     /// Wrong approach here, because if you run the app in multiple instance you end up with concurrency problems or duplicated migrations.
-    /// We should seed inside migrations applied prior to app start.
+    /// We should seed inside migrations applied prior to app start (or in a separate migrator project!).
     /// </remarks>
     /// </summary>
     public interface IDataSeedContributor
