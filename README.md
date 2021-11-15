@@ -51,8 +51,8 @@ The solution is implemented following the Domain-driven Design approach. The ava
 
 I have extracted a few domain models:
 - *Person*: the person that we are comparing for fraudulent identity.
-- *MatchingRule*: contains the logic to determine if two given people have the same identity. A MatchingRule can have a list of parameters that can be used to customize the runtime behaviour of the rule (eg. change the default probabilities). We can have multiple strategies that use different rules to calculate the probability of fraudulent identity.
-- *MatchingStrategy*: a collection of MatchingRules that specifies the order of executions and that is responsible of executing the rules.
+- *MatchingRule*: contains the logic to determine if two given people have the same identity. A MatchingRule can have a list of parameters that can be used to customize the runtime behaviour of the rule (eg. change the default probabilities).
+- *MatchingStrategy*: a collection of MatchingRules that specifies the order of executions and that is responsible of executing the rules.  We can have multiple strategies that use different rules to calculate the probability of fraudulent identity.
 
 As rules' logic might have dependencies or rely on external services, their logic doesn't fit well in the domain project.
 Each *MatchingRule* wraps indeed a concrete *Application* type that implements the *IMatchingRuleContributor*:
