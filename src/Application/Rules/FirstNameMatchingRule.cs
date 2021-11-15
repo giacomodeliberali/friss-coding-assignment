@@ -12,9 +12,9 @@ namespace Application.Rules
     /// </summary>
     [RuleParameter(IncreaseProbabilityWhenEqualsFirstNames, "The probability to add for a first name exact match.")]
     [RuleParameter(IncreaseProbabilityWhenSimilarFirstNames, "The probability to add for a first name similarity match.")]
-    public class FirstNameMatchingMatchingRule : IMatchingRuleContributor
+    public class FirstNameMatchingRule : IMatchingRuleContributor
     {
-        private readonly ILogger<FirstNameMatchingMatchingRule> _logger;
+        private readonly ILogger<FirstNameMatchingRule> _logger;
 
         /// <summary>
         /// The name of the parameter to adjust the probability to add for a first name exact match.
@@ -29,7 +29,7 @@ namespace Application.Rules
         /// <summary>
         /// Creates the rule.
         /// </summary>
-        public FirstNameMatchingMatchingRule(ILogger<FirstNameMatchingMatchingRule> logger)
+        public FirstNameMatchingRule(ILogger<FirstNameMatchingRule> logger)
         {
             _logger = logger;
         }
@@ -55,6 +55,7 @@ namespace Application.Rules
             }
             else if (AreSimilar(first.FirstName, second.FirstName))
             {
+                // Note: this "AreSimilar" logic could be extracted in a separate service to provide further customization
                 var increaseScorePercentageSimilarFirstNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenSimilarFirstNames, defaultValue: 0.15m);
 
                 _logger.LogDebug(
@@ -84,7 +85,8 @@ namespace Application.Rules
 
         private bool AreDiminutive(string first, string second)
         {
-            // GDL super bad heuristic!
+            // GDL super bad heuristic! We could use a local dictionary file to map different diminutives
+            // as they really don't follow a predicable pattern
             var levenshteinDistance = LevenshteinDistance(first, second);
 
             return levenshteinDistance <= 3;

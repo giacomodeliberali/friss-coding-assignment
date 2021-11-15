@@ -9,9 +9,9 @@ namespace Application.Rules
     /// This rule add 40% if the last names match.
     /// </summary>
     [RuleParameter(IncreaseProbabilityWhenEqualsLastNames, "The probability to add for a last name exact match.")]
-    public class LastNameMatchingMatchingRule : IMatchingRuleContributor
+    public class LastNameMatchingRule : IMatchingRuleContributor
     {
-        private readonly ILogger<LastNameMatchingMatchingRule> _logger;
+        private readonly ILogger<LastNameMatchingRule> _logger;
 
         /// <summary>
         /// The name of the parameter to adjust the probability to add for a last name exact match.
@@ -21,7 +21,7 @@ namespace Application.Rules
         /// <summary>
         /// Creates the rule.
         /// </summary>
-        public LastNameMatchingMatchingRule(ILogger<LastNameMatchingMatchingRule> logger)
+        public LastNameMatchingRule(ILogger<LastNameMatchingRule> logger)
         {
             _logger = logger;
         }

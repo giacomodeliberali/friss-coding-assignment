@@ -23,7 +23,7 @@ namespace UnitTests.Domain
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(IdentificationNumberEqualsMatchingMatchingRule).GetAssemblyQualifiedName(),
+                        typeof(IdentificationNumberEqualsMatchingRule).GetAssemblyQualifiedName(),
                         "Same identifiers",
                         "If same identifiers than 100% match",
                         isEnabled: true,

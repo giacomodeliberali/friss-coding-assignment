@@ -8,14 +8,14 @@ namespace Application.Rules
     /// <summary>
     /// This rule interrupts the pipeline and return 100% if business identifiers are known and equal.
     /// </summary>
-    public class IdentificationNumberEqualsMatchingMatchingRule : IMatchingRuleContributor
+    public class IdentificationNumberEqualsMatchingRule : IMatchingRuleContributor
     {
-        private readonly ILogger<IdentificationNumberEqualsMatchingMatchingRule> _logger;
+        private readonly ILogger<IdentificationNumberEqualsMatchingRule> _logger;
 
         /// <summary>
         /// Creates the rule.
         /// </summary>
-        public IdentificationNumberEqualsMatchingMatchingRule(ILogger<IdentificationNumberEqualsMatchingMatchingRule> logger)
+        public IdentificationNumberEqualsMatchingRule(ILogger<IdentificationNumberEqualsMatchingRule> logger)
         {
             _logger = logger;
         }

@@ -14,13 +14,13 @@ namespace UnitTests.Rules
 {
     public class IdentificationNumberEqualsMatchingRuleTest : RuleBaseTest
     {
-        private readonly IdentificationNumberEqualsMatchingMatchingRule _sut;
+        private readonly IdentificationNumberEqualsMatchingRule _sut;
 
         public IdentificationNumberEqualsMatchingRuleTest()
         {
-            var logger = Substitute.For<ILogger<IdentificationNumberEqualsMatchingMatchingRule>>();
+            var logger = Substitute.For<ILogger<IdentificationNumberEqualsMatchingRule>>();
 
-            _sut = new IdentificationNumberEqualsMatchingMatchingRule(logger);
+            _sut = new IdentificationNumberEqualsMatchingRule(logger);
         }
 
         [Fact]

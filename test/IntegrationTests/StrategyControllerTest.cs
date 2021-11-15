@@ -4,8 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Application.Contracts.Rules;
-using Application.Rules;
-using Domain.Extensions;
 using IntegrationTests.Setup;
 using Shouldly;
 using Web.Host;
@@ -35,10 +33,10 @@ namespace IntegrationTests
             result.ShouldNotBeNull();
             result.Count.ShouldBe(4);
             var rules = result.Select(r => r.AssemblyQualifiedName).ToList();
-            rules.Contains(typeof(FirstNameMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
-            rules.Contains(typeof(LastNameMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
-            rules.Contains(typeof(BirthDateEqualsMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
-            rules.Contains(typeof(IdentificationNumberEqualsMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
+            rules.Contains("Application.Rules.BirthDateEqualsMatchingRule, Application").ShouldBe(true);
+            rules.Contains("Application.Rules.FirstNameMatchingRule, Application").ShouldBe(true);
+            rules.Contains("Application.Rules.IdentificationNumberEqualsMatchingRule, Application").ShouldBe(true);
+            rules.Contains("Application.Rules.LastNameMatchingRule, Application").ShouldBe(true);
         }
 
         [Fact]
@@ -57,7 +55,7 @@ namespace IntegrationTests
                         Name = "Test firstname match rule",
                         Description = "When first name are similar or equal",
                         IsEnabled = true,
-                        RuleTypeAssemblyQualifiedName = "Application.Rules.FirstNameMatchingMatchingRule, Application",
+                        RuleTypeAssemblyQualifiedName = "Application.Rules.FirstNameMatchingRule, Application",
                     }
                 }
             };

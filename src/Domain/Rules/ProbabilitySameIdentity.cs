@@ -40,12 +40,12 @@ namespace Domain.Rules
         /// <exception cref="ValidationException">When the provided <paramref name="initialProbability"/> is not in the 0-1 range.</exception>
         public ProbabilitySameIdentity(decimal initialProbability = NoMatch)
         {
-            if (initialProbability < 0)
+            if (initialProbability < NoMatch)
             {
                 throw new ValidationException("Probability cannot be less than zero.");
             }
 
-            if (initialProbability > 1)
+            if (initialProbability > Match)
             {
                 throw new ValidationException("Probability cannot be more than one.");
             }

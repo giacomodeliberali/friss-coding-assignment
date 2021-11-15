@@ -45,26 +45,26 @@ namespace Application.Seed
                 new List<MatchingRule>()
                 {
                     MatchingRule.Factory.Create(
-                        typeof(IdentificationNumberEqualsMatchingMatchingRule).GetAssemblyQualifiedName(),
-                        nameof(IdentificationNumberEqualsMatchingMatchingRule),
+                        typeof(IdentificationNumberEqualsMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(IdentificationNumberEqualsMatchingRule),
                         "This rule interrupts the pipeline and return 100% if business identifiers are known and equal.",
                         true,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(LastNameMatchingMatchingRule).GetAssemblyQualifiedName(),
-                        nameof(LastNameMatchingMatchingRule),
+                        typeof(LastNameMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(LastNameMatchingRule),
                         "This rule add 40% if the last names match.",
                         true,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(FirstNameMatchingMatchingRule).GetAssemblyQualifiedName(),
-                        nameof(FirstNameMatchingMatchingRule),
+                        typeof(FirstNameMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(FirstNameMatchingRule),
                         "This rule add 20% if the first names match or 15% if they are similar.",
                         true,
                         new List<MatchingRuleParameter>()),
                     MatchingRule.Factory.Create(
-                        typeof(BirthDateEqualsMatchingMatchingRule).GetAssemblyQualifiedName(),
-                        nameof(BirthDateEqualsMatchingMatchingRule),
+                        typeof(BirthDateEqualsMatchingRule).GetAssemblyQualifiedName(),
+                        nameof(BirthDateEqualsMatchingRule),
                         "This rule add 40% if birth dates match or interrupt the pipeline if both birth dates are known and different.",
                         true,
                         new List<MatchingRuleParameter>()),

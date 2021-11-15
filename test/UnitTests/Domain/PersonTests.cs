@@ -82,5 +82,19 @@ namespace UnitTests.Domain
             sut.BirthDate.ShouldBe(DateTime.Parse("01-01-1996"));
             sut.IdentificationNumber.ShouldBe("12345");
         }
+
+        [Fact]
+        public void Should_NotConsiderBirthDateTime()
+        {
+            // Arrange
+            var sut = Person.Factory.Create(
+                "Giacomo ",
+                " De Liberali",
+                DateTime.UtcNow,
+                identificationNumber: null);
+
+            // Act & Assert
+            sut.BirthDate.ShouldBe(DateTime.UtcNow.Date);
+        }
     }
 }

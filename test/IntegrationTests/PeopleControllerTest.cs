@@ -30,7 +30,7 @@ namespace IntegrationTests
         [InlineData(DemoUsersSeed.AndrewCrawId, DemoUsersSeed.PettySmithId, 0.4, 1)]
         [InlineData(DemoUsersSeed.AndrewCrawId, DemoUsersSeed.ACrawId, 0.95, 3)]
         [InlineData(DemoUsersSeed.AndrewCrawWithIdentificationNumberId, DemoUsersSeed.PettySmithWithIdentificationNumberId, 1, 1)]
-        public async Task CalculateProbabilityForDemoUser(string first, string second, decimal expected, int contributorsCount)
+        public async Task CalculateProbabilityForDemoPeople(string first, string second, decimal expected, int contributorsCount)
         {
             // Arrange
             var strategyId = await GetStrategyId();
@@ -78,9 +78,13 @@ namespace IntegrationTests
         {
             var url = $"/api/strategies";
             var result = await _httpClient.GetFromJsonAsync<List<StrategyDto>>(url);
+
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
-            return result!.Single().Id;
+            var strategyId = result.Single().Id;
+            strategyId.ShouldNotBe(Guid.Empty);
+
+            return strategyId;
         }
     }
 }

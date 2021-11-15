@@ -15,13 +15,13 @@ namespace UnitTests.Rules
 {
     public class BirthDateEqualsMatchingRuleTest : RuleBaseTest
     {
-        private readonly BirthDateEqualsMatchingMatchingRule _sut;
+        private readonly BirthDateEqualsMatchingRule _sut;
 
         public BirthDateEqualsMatchingRuleTest()
         {
-            var logger = Substitute.For<ILogger<BirthDateEqualsMatchingMatchingRule>>();
+            var logger = Substitute.For<ILogger<BirthDateEqualsMatchingRule>>();
 
-            _sut = new BirthDateEqualsMatchingMatchingRule(logger);
+            _sut = new BirthDateEqualsMatchingRule(logger);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create(BirthDateEqualsMatchingMatchingRule.IncreaseProbabilityWhenBirthDateMatches, providedMatchProbability),
+                    MatchingRuleParameter.Factory.Create(BirthDateEqualsMatchingRule.IncreaseProbabilityWhenBirthDateMatches, providedMatchProbability),
                 });
 
             // Act

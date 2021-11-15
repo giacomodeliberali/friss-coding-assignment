@@ -75,7 +75,7 @@ namespace Domain.Model
             /// <param name="id">The id to use.</param>
             /// <param name="firstName">The first name.</param>
             /// <param name="lastName">The last name.</param>
-            /// <param name="birthDate">The birth date.</param>
+            /// <param name="birthDate">The birth date (time is not considered).</param>
             /// <param name="identificationNumber">The business identification number.</param>
             /// <exception cref="ValidationException">When parameters are invalid.</exception>
             /// <returns>A new validated instances of <see cref="Person"/>.</returns>
@@ -95,7 +95,7 @@ namespace Domain.Model
                     Id = id,
                     FirstName = firstName.Trim(),
                     LastName = lastName.Trim(),
-                    BirthDate = birthDate,
+                    BirthDate = birthDate?.Date, // do not save time. Note: the timezone is not handled, we should only accept UTC
                     IdentificationNumber = identificationNumber?.Trim(),
                 };
             }

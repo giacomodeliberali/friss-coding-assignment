@@ -14,13 +14,13 @@ namespace UnitTests.Rules
 {
     public class LastNameMatchingRuleTest : RuleBaseTest
     {
-        private readonly LastNameMatchingMatchingRule _sut;
+        private readonly LastNameMatchingRule _sut;
 
         public LastNameMatchingRuleTest()
         {
-            var logger = Substitute.For<ILogger<LastNameMatchingMatchingRule>>();
+            var logger = Substitute.For<ILogger<LastNameMatchingRule>>();
 
-            _sut = new LastNameMatchingMatchingRule(logger);
+            _sut = new LastNameMatchingRule(logger);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace UnitTests.Rules
                 isEnabled: true,
                 new List<MatchingRuleParameter>()
                 {
-                    MatchingRuleParameter.Factory.Create(LastNameMatchingMatchingRule.IncreaseProbabilityWhenEqualsLastNames, providedMatchProbability),
+                    MatchingRuleParameter.Factory.Create(LastNameMatchingRule.IncreaseProbabilityWhenEqualsLastNames, providedMatchProbability),
                 });
 
             // Act
