@@ -96,7 +96,14 @@ namespace Application.Seed
 
             await _personRepository.SaveChangesAsync(); // simulate UnitOfWork
 
-            _logger.LogInformation("People seed completed. Seeded {Number} entries", createdEntries);
+            if (createdEntries == 0)
+            {
+                _logger.LogInformation("Default people found. Skipping seed");
+            }
+            else
+            {
+                _logger.LogInformation("People seed completed. Created {Number} people", createdEntries);
+            }
         }
     }
 }

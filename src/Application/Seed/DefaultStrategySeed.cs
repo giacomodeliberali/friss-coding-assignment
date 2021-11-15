@@ -35,7 +35,7 @@ namespace Application.Seed
 
             if (strategies.Any())
             {
-                _logger.LogInformation("Existing strategy found. Skipping seed");
+                _logger.LogInformation("Existing strategies found. Skipping seed");
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace Application.Seed
 
             await _matchingStrategyRepository.CreateAsync(defaultStrategy);
 
-            _logger.LogInformation("Seed of Default strategy complete");
+            _logger.LogInformation("No strategies found, created a default strategy");
         }
     }
 }
