@@ -169,6 +169,47 @@ public class FirstNameMatchingMatchingRule : IMatchingRuleContributor
  }
 ```
 
+### Calculate probability same identity
+
+To calculate the probability that two people have the same identity you can use the endpoint `GET api/people/probability-same-identity`. It accepts the following parameters:
+- `firstPersonId`: the guid (the database key, not the business identifier) of the first person
+- `secondPersonId`: the guid of the second person to compare
+- `strategyId`: the guid of the strategy to use for this comparison
+
+Once the `IMatchingStrategyExecutor` runs the rules pipeline, it will create a response object that contains the final probability
+and the list of rules that contributed to the final result and the contribution's value. An example response will be:
+
+```json
+{
+    "probability": 0.95,
+    "contributors": [
+        {
+            "name": "LastNameMatchingRule",
+            "description": "This rule add 40% if the last names match.",
+            "ruleType": "Application.Rules.LastNameMatchingRule, Application",
+            "value": 0.4
+        },
+        {
+            "name": "FirstNameMatchingRule",
+            "description": "This rule add 20% if the first names match or 15% if they are similar.",
+            "ruleType": "Application.Rules.FirstNameMatchingRule, Application",
+            "value": 0.15
+        },
+        {
+            "name": "BirthDateEqualsMatchingRule",
+            "description": "This rule add 40% if birth dates match or interrupt the pipeline if both birth dates are known and different.",
+            "ruleType": "Application.Rules.BirthDateEqualsMatchingRule, Application",
+            "value": 0.4
+        }
+    ],
+    "strategy": {
+        "id": "973128af-7a5d-4638-b4df-a3b2415653dc",
+        "name": "Default",
+        "description": "The default strategy with the rules defined in the assignment"
+    }
+}
+```
+
 ### Logs
 
 Application logs are written to console and to file (`src/Web.Host/Logs/logs.txt`) using Serilog. All
