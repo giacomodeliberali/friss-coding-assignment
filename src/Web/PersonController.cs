@@ -1,16 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Application.Contracts;
 using Application.Contracts.Person;
 using Application.Services;
-using Domain.Exceptions;
 using Domain.Model;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using ValidationException = Domain.Exceptions.ValidationException;
 
 namespace Web
 {
@@ -48,7 +43,7 @@ namespace Web
                 return BadRequest();
             }
 
-            return Created(string.Empty, result);
+            return StatusCode(StatusCodes.Status201Created, result);
         }
 
         /// <summary>
@@ -64,10 +59,10 @@ namespace Web
         }
 
         /// <summary>
-        /// Calculates the probability that the two given people are the same identity.
-        /// It uses the provided strategy or the "Default" one if none is specified.
+        /// Calculates the probability that the two given people have the same identity
+        /// using the provided strategy.
         /// </summary>
-        /// <param name="input">The dto with the <see cref="Person"/> to compare and the strategy to use.</param>
+        /// <param name="input">The dto with the <see cref="Person"/> to compare and the <see cref="MatchingStrategy"/> to use.</param>
         /// <returns></returns>
         [ProducesResponseType(typeof(ProbabilitySameIdentityDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]

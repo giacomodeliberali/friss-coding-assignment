@@ -42,14 +42,13 @@ namespace Application.Rules
             ProbabilitySameIdentity currentProbability,
             NextMatchingRuleDelegate next)
         {
+            // Note: we could have a rule parameter that allow us to specify the type of comparison (eg. IgnoreCase)
             if (first.FirstName == second.FirstName)
             {
                 var increaseProbabilityWhenEqualsFirstNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenEqualsFirstNames, defaultValue: 0.2m);
 
                 _logger.LogDebug(
-                    "Found firstnames match ({First} - {Second}). Adding {Probability}",
-                    first.FirstName,
-                    second.FirstName,
+                    "Found firstnames match. Adding {Probability}",
                     increaseProbabilityWhenEqualsFirstNames);
 
                 currentProbability.AddContributor(rule, increaseProbabilityWhenEqualsFirstNames);
@@ -59,9 +58,7 @@ namespace Application.Rules
                 var increaseScorePercentageSimilarFirstNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenSimilarFirstNames, defaultValue: 0.15m);
 
                 _logger.LogDebug(
-                    "Found firstnames similarity ({First} - {Second}). Adding {Probability}",
-                    first.FirstName,
-                    second.FirstName,
+                    "Found firstnames similarity. Adding {Probability}",
                     increaseScorePercentageSimilarFirstNames);
 
                 currentProbability.AddContributor(rule, increaseScorePercentageSimilarFirstNames);

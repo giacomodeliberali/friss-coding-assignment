@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Net;
 using Application;
-using Application.Cache;
 using Application.Contracts;
 using Domain.Exceptions;
 using EntityFrameworkCore;
@@ -33,6 +32,13 @@ namespace Web.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // add controllers of the Web project
+            services.AddControllers()
+                .PartManager
+                .ApplicationParts
+                .Add(new AssemblyPart(typeof(IWebAssemblyMarker).Assembly));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.Host", Version = "v1" });
@@ -45,23 +51,19 @@ namespace Web.Host
                 }
             });
 
-            services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(IWebAssemblyMarker).Assembly));
-
             // Register custom objects to the DI container
             services.AddApplicationServices();
             services.AddRepositories();
 
-            // Add dbcontext
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlite(Configuration.GetConnectionString("Default"));
             });
 
+            // Add caching
             services.AddMemoryCache();
-            services.AddSingleton<ICustomMemoryCache, CustomMemoryCache>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -74,28 +76,32 @@ namespace Web.Host
                 });
             }
 
+            // Add serilog middleware
             app.UseSerilogRequestLogging();
 
+            // Add unhandled exception middleware: serialize all as ExceptionDto with the appropriate status code
             app.UseExceptionHandler(errorApp =>
             {
                 errorApp.Run(async context =>
                 {
-                    // all unhandled exception will be serialized as ExceptionDto
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
                     context.Response.StatusCode = exceptionHandlerPathFeature?.Error switch
                     {
                         ValidationException => (int) HttpStatusCode.BadRequest,
-                        BusinessException => (int) HttpStatusCode.InternalServerError,
+                        BusinessException => (int) HttpStatusCode.BadRequest,
                         _ => context.Response.StatusCode
                     };
 
-                    await context.Response.WriteAsJsonAsync(new ExceptionDto
+                    // write exception details only in development
+                    var serializedException = new ExceptionDto
                     {
                         Name = exceptionHandlerPathFeature?.Error.GetType().Name,
                         StackTrace = env.IsDevelopment() ? exceptionHandlerPathFeature?.Error.StackTrace : null,
-                        Message = exceptionHandlerPathFeature?.Error.Message
-                    });
+                        Message = env.IsDevelopment() ? exceptionHandlerPathFeature?.Error.Message : null,
+                    };
+
+                    await context.Response.WriteAsJsonAsync(serializedException);
                 });
             });
 

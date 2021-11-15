@@ -6,6 +6,9 @@ using Domain.Extensions;
 using Domain.Model;
 using Domain.Rules;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using SerilogTimings;
+using SerilogTimings.Extensions;
 
 namespace Application.Rules
 {
@@ -33,11 +36,9 @@ namespace Application.Rules
             first.ThrowIfNull(nameof(first));
             second.ThrowIfNull(nameof(second));
 
-            _logger.LogDebug("Start pipeline for strategy {StrategyName} comparing {FirstPersonId} and {SecondPersonId}", strategy.Name, first.Id, second.Id);
-
             if (first.Id == second.Id)
             {
-                _logger.LogDebug("People have the same id, terminating pipeline");
+                _logger.LogDebug("People have the same id, terminating pipeline with 100% match");
                 return new ProbabilitySameIdentity(initialProbability: ProbabilitySameIdentity.Match);
             }
 
@@ -56,7 +57,7 @@ namespace Application.Rules
                         return async (current) =>
                         {
                             _logger.LogDebug(
-                                "Executing rule {Rule} with type {RuleType}. Current probability = {Probability}",
+                                "Executing rule {RuleName} with type {RuleType}. Current probability = {Probability}",
                                 currentRule.Name,
                                 currentRule.RuleType.GetAssemblyQualifiedName(),
                                 current.Probability);
@@ -64,16 +65,25 @@ namespace Application.Rules
                             if (current.IsMatch())
                             {
                                 // interrupt the pipeline
-                                _logger.LogDebug("Probability is 100%, exiting pipeline");
+                                _logger.LogInformation("Probability is 100%, interrupting pipeline");
                                 return current;
                             }
 
                             if (currentRule.IsEnabled)
                             {
+                                _logger.LogDebug(
+                                    "Rule {RuleName} with type {RuleType} is enabled",
+                                    currentRule.Name,
+                                    currentRule.RuleType.GetAssemblyQualifiedName());
+
                                 var ruleContributor = (IMatchingRuleContributor)_serviceProvider.GetService(currentRule.RuleType);
 
                                 if (ruleContributor is null)
                                 {
+                                    _logger.LogError(
+                                        "RuleType {RuleType} is not registered in DI container",
+                                        currentRule.RuleType.GetAssemblyQualifiedName());
+
                                     throw new MatchingRuleNotRegisteredInDiContainer(currentRule.RuleType.FullName);
                                 }
 
@@ -81,13 +91,22 @@ namespace Application.Rules
                             }
 
                             // skip this rule and continue the pipeline
+
+                            _logger.LogDebug(
+                                "Rule {RuleName} with type {RuleType} is disabled, skipping to next",
+                                currentRule.Name,
+                                currentRule.RuleType.GetAssemblyQualifiedName());
+
                             return await next(current);
                         };
                     });
 
             var probabilitySameIdentity = new ProbabilitySameIdentity();
 
-            await rulesPipelines(probabilitySameIdentity);
+            using (Log.ForContext<MatchingRuleStrategyExecutor>().TimeOperation("Matching rules pipeline execution"))
+            {
+                await rulesPipelines(probabilitySameIdentity);
+            }
 
             _logger.LogDebug("End pipeline with probability {FinalProbability}", probabilitySameIdentity.Probability);
 

@@ -21,7 +21,6 @@ namespace Application.Rules
         /// <summary>
         /// Creates the rule.
         /// </summary>
-        /// <param name="logger"></param>
         public LastNameMatchingMatchingRule(ILogger<LastNameMatchingMatchingRule> logger)
         {
             _logger = logger;
@@ -35,14 +34,13 @@ namespace Application.Rules
             ProbabilitySameIdentity currentProbability,
             NextMatchingRuleDelegate next)
         {
+            // Note: we could have a rule parameter that allow us to specify the type of comparison (eg. IgnoreCase)
             if (first.LastName == second.LastName)
             {
                 var increaseProbabilityWhenEqualsLastNames = rule.GetParameterOrDefault(IncreaseProbabilityWhenEqualsLastNames, defaultValue: 0.4m);
 
                 _logger.LogDebug(
-                    "Found lastnames match ({First} - {Second}). Adding {Probability}",
-                    first.LastName,
-                    second.LastName,
+                    "Found lastnames match. Adding {Probability}",
                     increaseProbabilityWhenEqualsLastNames);
 
                 currentProbability.AddContributor(rule, increaseProbabilityWhenEqualsLastNames);

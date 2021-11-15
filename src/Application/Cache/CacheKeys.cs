@@ -7,7 +7,7 @@ namespace Application.Cache
     internal static class CacheKeys
     {
         /// <summary>
-        /// Returns the cache key sorting the guids and combining them as "Guid1.Guid2.StrategyName".
+        /// Returns the cache key sorting the guids and combining them as "CalculateProbabilitySameIdentity.Guid1.Guid2.StrategyId".
         /// </summary>
         public static string CalculateProbabilitySameIdentity(
             Guid firstPersonId,
@@ -17,6 +17,7 @@ namespace Application.Cache
             var stringBuilder = new StringBuilder();
 
             stringBuilder.Append(nameof(CalculateProbabilitySameIdentity));
+            stringBuilder.Append('.');
 
             var firstGuid = firstPersonId.ToString();
             var secondGuid = secondPersonId.ToString();
@@ -24,14 +25,17 @@ namespace Application.Cache
             if (string.CompareOrdinal(firstGuid, secondGuid) <= 0)
             {
                 stringBuilder.Append(firstGuid);
+                stringBuilder.Append('.');
                 stringBuilder.Append(secondGuid);
             }
             else
             {
                 stringBuilder.Append(secondGuid);
+                stringBuilder.Append('.');
                 stringBuilder.Append(firstGuid);
             }
 
+            stringBuilder.Append('.');
             stringBuilder.Append(strategyId.ToString());
 
             return stringBuilder.ToString();

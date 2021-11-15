@@ -12,11 +12,20 @@ namespace EntityFrameworkCore
         /// </summary>
         public DbSet<PersonData> People { get; set; }
 
-        public DbSet<MatchingStrategyData> PersonMatchingStrategies { get; set; }
+        /// <summary>
+        /// The table that contains all the <see cref="MatchingStrategies"/>.
+        /// </summary>
+        public DbSet<MatchingStrategyData> MatchingStrategies { get; set; }
 
-        public DbSet<MatchingRuleData> PersonMatchingRules { get; set; }
+        /// <summary>
+        /// The table that contains all the <see cref="MatchingRule"/>.
+        /// </summary>
+        public DbSet<MatchingRuleData> MatchingRules { get; set; }
 
-        public DbSet<MatchingRuleParameterData> PersonMatchingRulesParameters { get; set; }
+        /// <summary>
+        /// The table that contains all the <see cref="MatchingRuleParameter"/>.
+        /// </summary>
+        public DbSet<MatchingRuleParameterData> MatchingRulesParameters { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

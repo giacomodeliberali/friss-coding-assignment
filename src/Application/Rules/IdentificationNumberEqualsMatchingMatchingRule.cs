@@ -30,11 +30,7 @@ namespace Application.Rules
         {
             if (AreIdentificationNumbersPopulatedAndEqual(first.IdentificationNumber, second.IdentificationNumber))
             {
-                _logger.LogDebug(
-                    "Found identification number match ({First} - {Second}). Returning match",
-                    first.IdentificationNumber,
-                    second.IdentificationNumber);
-
+                _logger.LogDebug("Found identification number match. Returning 100%");
                 return currentProbability.SetMatch(rule);
             }
 

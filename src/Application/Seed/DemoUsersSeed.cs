@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Extensions;
@@ -42,94 +43,60 @@ namespace Application.Seed
             // Note: we should check only interested ids and not load the entire table in memory!
             var people = await _personRepository.GetAllAsync();
 
-            if (people.All(p => p.Id != AndrewCrawId.ToGuid()))
+            var peopleToCreate = new List<Person>()
             {
-                var person = Person.Factory.Create(
+                Person.Factory.Create(
                     AndrewCrawId.ToGuid(),
                     "Andrew",
                     "Craw",
                     DateTime.Parse("1985-02-20"),
-                    identificationNumber: null);
-
-                await _personRepository.CreateAsync(person);
-
-                _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
-            }
-
-            if (people.All(p => p.Id != AndrewCraw2Id.ToGuid()))
-            {
-                var person = Person.Factory.Create(
+                    identificationNumber: null),
+                Person.Factory.Create(
                     AndrewCraw2Id.ToGuid(),
                     "Andrew",
                     "Craw",
                     birthDate: null,
-                    identificationNumber: null);
-
-                await _personRepository.CreateAsync(person);
-
-                _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
-            }
-
-            if (people.All(p => p.Id != PettySmithId.ToGuid()))
-            {
-                var person = Person.Factory.Create(
+                    identificationNumber: null),
+                Person.Factory.Create(
                     PettySmithId.ToGuid(),
                     "Petty",
                     "Smith",
                     DateTime.Parse("1985-02-20"),
-                    identificationNumber: null);
-
-                await _personRepository.CreateAsync(person);
-
-                _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
-            }
-
-            if (people.All(p => p.Id != ACrawId.ToGuid()))
-            {
-                var person = Person.Factory.Create(
+                    identificationNumber: null),
+                Person.Factory.Create(
                     ACrawId.ToGuid(),
                     "A.",
                     "Craw",
                     DateTime.Parse("1985-02-20"),
-                    identificationNumber: null);
-
-                await _personRepository.CreateAsync(person);
-
-                _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
-            }
-
-            if (people.All(p => p.Id != AndrewCrawWithIdentificationNumberId.ToGuid()))
-            {
-                var person = Person.Factory.Create(
+                    identificationNumber: null),
+                Person.Factory.Create(
                     AndrewCrawWithIdentificationNumberId.ToGuid(),
                     "Andrew",
                     "Craw",
                     DateTime.Parse("1985-02-20"),
-                    identificationNumber: "931212312");
-
-                await _personRepository.CreateAsync(person);
-
-                _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
-            }
-
-            if (people.All(p => p.Id != PettySmithWithIdentificationNumberId.ToGuid()))
-            {
-                var person = Person.Factory.Create(
+                    identificationNumber: "931212312"),
+                Person.Factory.Create(
                     PettySmithWithIdentificationNumberId.ToGuid(),
                     "Petty",
                     "Smith",
                     DateTime.Parse("1985-02-20"),
-                    identificationNumber: "931212312");
+                    identificationNumber: "931212312"),
+            };
 
-                await _personRepository.CreateAsync(person);
-
-                _logger.LogInformation("Created {FirstName} {LastName} ({BirthDate}) Id = {IdentificationNumber}", person.FirstName, person.LastName, person.BirthDate, person.IdentificationNumber);
+            var createdEntries = 0;
+            foreach (var person in peopleToCreate)
+            {
+                if (people.All(p => p.Id != person.Id))
+                {
+                    await _personRepository.CreateAsync(person);
+                    createdEntries++;
+                    _logger.LogInformation("Seeded person {Guid}", person.Id);
+                }
             }
 
             await _personRepository.SaveChangesAsync(); // simulate UnitOfWork
 
-            _logger.LogInformation("People seed completed");
-
+            _logger.LogInformation("People seed completed. Seeded {Number} entries", createdEntries);
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Application.Contracts;
 using Application.Contracts.Rules;
 using Application.Services;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,11 +19,15 @@ namespace Web
     public class StrategyController : ControllerBase
     {
         private readonly IStrategyMatchApplicationService _strategyMatchApplicationService;
+        private readonly ILogger<StrategyController> _logger;
 
         /// <inheritdoc />
-        public StrategyController(IStrategyMatchApplicationService strategyMatchApplicationService)
+        public StrategyController(
+            IStrategyMatchApplicationService strategyMatchApplicationService,
+            ILogger<StrategyController> logger)
         {
             _strategyMatchApplicationService = strategyMatchApplicationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace Web
                 return BadRequest();
             }
 
-            return Created(string.Empty, result);
+            return StatusCode(StatusCodes.Status201Created, result);
 
         }
 
@@ -55,11 +58,12 @@ namespace Web
         /// <param name="input">The strategy to update.</param>
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateAsync(Guid id, [Required] UpdateStrategyDto input)
         {
             if (id != input.Id)
             {
+                _logger.LogWarning("Route and body ids do not match");
                 return BadRequest();
             }
 

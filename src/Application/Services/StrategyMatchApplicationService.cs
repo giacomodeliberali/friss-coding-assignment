@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Application.Cache;
 using Application.Contracts;
 using Application.Contracts.Rules;
-using Application.Exceptions;
 using Application.Extensions;
 using Domain.Exceptions;
 using Domain.Model;
@@ -72,6 +71,8 @@ namespace Application.Services
                 await _strategyRepository.CreateAsync(strategy);
                 await _strategyRepository.SaveChangesAsync(); // simulate UnitOfWork
 
+                _logger.LogInformation("Created MatchingStrategy with id {StrategyId}", strategy.Id);
+
                 return new CreateStrategyReplyDto()
                 {
                     Id = strategy.Id,
@@ -79,7 +80,7 @@ namespace Application.Services
             }
             catch (ValidationException validationException)
             {
-                _logger.LogDebug(validationException, "Validation exception");
+                _logger.LogWarning(validationException, "Matching strategy creation failed");
                 return null;
             }
         }
@@ -88,7 +89,14 @@ namespace Application.Services
         public async Task<StrategyDto> GetByIdAsync(Guid strategyId)
         {
             var strategy = await _strategyRepository.GetByIdAsync(strategyId);
-            return strategy?.ToDto();
+
+            if (strategy is null)
+            {
+                _logger.LogWarning("MatchingStrategy with id {StrategyId} not found", strategyId);
+                return null;
+            }
+
+            return strategy.ToDto();
         }
 
         /// <inheritdoc />
@@ -105,6 +113,7 @@ namespace Application.Services
 
             if (strategy is null)
             {
+                _logger.LogWarning("MatchingStrategy with id {StrategyId} not found", strategyId);
                 return false;
             }
 
@@ -112,7 +121,9 @@ namespace Application.Services
             await _strategyRepository.SaveChangesAsync(); // simulate UnitOfWork
 
             // remove entry from cache. Note: this should be isolated in an handler that is listening for domain events (eg. MatchingStrategyDeletedEvent)!
-            _memoryCache.RemoveIf(key => ((string) key).Contains(strategy.Id.ToString()));
+            _memoryCache.RemoveIf(key => ((string) key).EndsWith(strategy.Id.ToString()));
+
+            _logger.LogInformation("Removed all cache keys for deleted strategyId {StrategyId}", strategyId);
 
             return true;
         }
@@ -123,6 +134,12 @@ namespace Application.Services
             try
             {
                 var strategy = await _strategyRepository.GetByIdAsync(input.Id);
+
+                if (strategy is null)
+                {
+                    _logger.LogWarning("MatchingStrategy with id {StrategyId} not found", input.Id);
+                    return false;
+                }
 
                 var rules = new List<MatchingRule>();
 
@@ -155,22 +172,25 @@ namespace Application.Services
                 // remove entry from cache. Note: this should be isolated in an handler that is listening for domain events (eg. MatchingStrategyDeletedEvent)!
                 _memoryCache.RemoveIf(key => ((string) key).Contains(strategy.Id.ToString()));
 
+                _logger.LogInformation("Removed all cache keys for updated strategyId {StrategyId}", strategy.Id);
 
                 return true;
             }
             catch (ValidationException validationException)
             {
-                _logger.LogDebug(validationException, "Validation exception");
+                _logger.LogWarning(validationException, "MatchingStrategy updated failed");
                 return false;
             }
         }
 
         /// <inheritdoc />
-        public Task<IEnumerable<RuleDto>> GetAvailableRulesAsync()
+        public Task<List<RuleDto>> GetAvailableRulesAsync()
         {
-            if (_memoryCache.TryGetValue(CacheKeys.AvailableRules, out var cachedRules))
+            if (_memoryCache.TryGetValue(CacheKeys.AvailableRules, out var cacheEntry))
             {
-                return Task.FromResult((IEnumerable<RuleDto>)cachedRules);
+                var cachedRules = (List<RuleDto>) cacheEntry;
+                _logger.LogInformation("Cache hit, returning {Number} IMatchingRuleContributor", cachedRules.Count);
+                return Task.FromResult(cachedRules);
             }
 
             var ruleContributorType = typeof(IMatchingRuleContributor);
@@ -202,9 +222,12 @@ namespace Application.Services
                 rules.Add(ruleTypeDto);
             }
 
-            _memoryCache.Set(CacheKeys.AvailableRules, rules); // does not have a expire date as it saved in memory and it can change only after app restart
+            // does not have a expire date as it saved in memory and it can change only after app restart
+            _memoryCache.Set(CacheKeys.AvailableRules, rules);
 
-            return Task.FromResult((IEnumerable<RuleDto>)rules);
+            _logger.LogInformation("Cached {Number} IMatchingRuleContributor", rules.Count);
+
+            return Task.FromResult(rules);
         }
     }
 }

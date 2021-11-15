@@ -49,6 +49,6 @@ namespace Application.Services
         /// Returns the list of available <see cref="IMatchingRuleContributor"/> to compose a <see cref="MatchingStrategy"/>.
         /// </summary>
         /// <returns>The list of available rule types.</returns>
-        Task<IEnumerable<RuleDto>> GetAvailableRulesAsync();
+        Task<List<RuleDto>> GetAvailableRulesAsync();
     }
 }

@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
+using Application.Cache;
 using Application.Rules;
 using Application.Seed;
 using Application.Services;
 using Domain.Rules;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Application
 {
@@ -24,6 +26,9 @@ namespace Application
             serviceCollection.AddTransient<IStrategyMatchApplicationService, StrategyMatchApplicationService>();
             serviceCollection.AddTransient<IMatchingRuleStrategyExecutor, MatchingRuleStrategyExecutor>();
 
+            // Add cache
+            serviceCollection.AddSingleton<ICustomMemoryCache, CustomMemoryCache>();
+
            serviceCollection.AddRuleTypes();
            serviceCollection.AddDataSeedContributors();
         }
@@ -32,13 +37,13 @@ namespace Application
         {
             var ruleContributorType = typeof(IMatchingRuleContributor);
             var types = AppDomain.CurrentDomain.GetAssemblies()
-                .AsParallel()
                 .SelectMany(x => x.GetTypes())
                 .Where(x => !x.IsInterface && !x.IsAbstract)
                 .Where(x => ruleContributorType.IsAssignableFrom(x));
 
             foreach (var type in types)
             {
+                Log.ForContext<IMatchingRuleContributor>().Debug("Registering {Type} in DI container", type.FullName);
                 serviceCollection.AddTransient(type);
             }
         }

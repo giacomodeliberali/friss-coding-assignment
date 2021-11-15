@@ -40,20 +40,14 @@ namespace Application.Rules
                 // do not consider time when comparing dates
                 if (first.BirthDate!.Value.Date != second.BirthDate!.Value.Date)
                 {
-                    _logger.LogDebug(
-                        "Birth dates are populated and different ({First} - {Second}). Returning 0%",
-                        first.BirthDate.Value.Date,
-                        second.BirthDate.Value.Date);
-
+                    _logger.LogDebug("Birth dates are populated and different. Returning 0%");
                     return currentProbability.SetNoMatch(rule);
                 }
 
                 var increaseProbabilityWhenBirthDatesMatch = rule.GetParameterOrDefault(IncreaseProbabilityWhenBirthDateMatches, defaultValue: 0.4m);
 
                 _logger.LogDebug(
-                    "Found birth dates match ({First} - {Second}). Adding {Probability}",
-                    first.BirthDate.Value.Date,
-                    second.BirthDate.Value.Date,
+                    "Found birth dates match. Adding {Probability}",
                     increaseProbabilityWhenBirthDatesMatch);
 
                 currentProbability.AddContributor(rule, increaseProbabilityWhenBirthDatesMatch);

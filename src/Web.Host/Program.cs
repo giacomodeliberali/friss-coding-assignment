@@ -31,7 +31,7 @@ namespace Web.Host
 
                 // seed database
                 // Note: wrong approach here, because if you run the app in multiple instance you end up with concurrency problems or duplicated migrations.
-                // We should seed inside migrations applied prior to app start.
+                // We should seed inside migrations applied prior to app start (maybe in a different migrator project).
                 using var scope = hostBuilder.Services.CreateScope();
                 var applicationDbContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
                 await applicationDbContext!.Database.EnsureCreatedAsync();
@@ -40,7 +40,6 @@ namespace Web.Host
                     await dataSeedContributor.SeedAsync();
                 }
 
-                Log.Information("Starting web host");
                 await hostBuilder.RunAsync();
             }
             catch (Exception ex)

@@ -1,11 +1,11 @@
-using Domain.Exceptions;
+using System;
 
 namespace Application.Exceptions
 {
     /// <summary>
     /// Thrown when a rule is not registered into the DI container.
     /// </summary>
-    public class MatchingRuleNotRegisteredInDiContainer : BusinessException
+    public class MatchingRuleNotRegisteredInDiContainer : Exception
     {
         /// <summary>
         /// Creates the exception.

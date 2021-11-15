@@ -40,5 +40,36 @@ namespace IntegrationTests
             rules.Contains(typeof(BirthDateEqualsMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
             rules.Contains(typeof(IdentificationNumberEqualsMatchingMatchingRule).GetAssemblyQualifiedName()).ShouldBe(true);
         }
+
+        [Fact]
+        public async Task ShouldCreateAStrategy()
+        {
+            // Arrange
+            var url = $"/api/strategies";
+            var createStrategyDto = new CreateStrategyDto()
+            {
+                Name = "Test strategy",
+                Description = "My test strategy description",
+                Rules = new List<CreateStrategyDto.CreateRuleDto>()
+                {
+                    new()
+                    {
+                        Name = "Test firstname match rule",
+                        Description = "When first name are similar or equal",
+                        IsEnabled = true,
+                        RuleTypeAssemblyQualifiedName = "Application.Rules.FirstNameMatchingMatchingRule, Application",
+                    }
+                }
+            };
+
+            // Act
+            var result = await _httpClient.PostAsJsonAsync(url, createStrategyDto);
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.EnsureSuccessStatusCode();
+            var createdStrategy = await result.Content.ReadFromJsonAsync<CreateStrategyReplyDto>();
+            createdStrategy.ShouldNotBeNull();
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace Application.Services
             }
             catch (ValidationException validationException)
             {
-                _logger.LogDebug(validationException, "Validation errors");
+                _logger.LogWarning(validationException, "Person creation failed");
                 return null;
             }
         }
@@ -71,6 +71,7 @@ namespace Application.Services
             var cacheKey = CacheKeys.CalculateProbabilitySameIdentity(input.FirstPersonId, input.SecondPersonId, input.StrategyId);
             if (_memoryCache.TryGetValue(cacheKey, out ProbabilitySameIdentityDto cacheEntry))
             {
+                _logger.LogInformation("Cache hit ({CacheKey}), returning cached value", cacheKey);
                 return cacheEntry;
             }
 
@@ -78,6 +79,7 @@ namespace Application.Services
 
             if (strategy is null)
             {
+                _logger.LogWarning("MatchingStrategy with id {StrategyId} not found", input.StrategyId);
                 return null;
             }
 
@@ -85,6 +87,7 @@ namespace Application.Services
 
             if (firstPerson is null)
             {
+                _logger.LogWarning("Person with id {PersonId} not found", input.FirstPersonId);
                 return null;
             }
 
@@ -92,6 +95,7 @@ namespace Application.Services
 
             if (secondPerson is null)
             {
+                _logger.LogWarning("Person with id {PersonId} not found", input.SecondPersonId);
                 return null;
             }
 
@@ -117,6 +121,8 @@ namespace Application.Services
 
             // insert in cache for 10min. Must be evicted if MatchingStrategy or Person change
             _memoryCache.Set(cacheKey, result, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(10));
+
+            _logger.LogInformation("Probability calculation complete, cache updated {CacheKey}", cacheKey);
 
             return result;
         }
