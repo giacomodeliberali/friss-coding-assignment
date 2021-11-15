@@ -29,6 +29,24 @@ Similar first names examples:
 Here are some other points: Logging, Documentation, Security, Request caching, Mathing rules are configurable, UI
 for matching rule configuration. They are in order of importance to us!
 
+## Project structure
+
+The solution is implemented following the Domain-driven Design approach. The available projects are:
+
+- `Web.Host`: bootstraps the application, contains the `Startup.cs`
+  - References the `Web` project
+- `Web`: contains the exposed controllers and should deal with authentication and authorization (not implemented at the moment). It uses the application services exposed by the `Application` layer 
+  - References `Application` project
+- `Application`: contains the application services that exposes the different use cases. 
+  - References: `Domain`, `Application.Contracts` projects
+- `Application.Contracts`: contains the data transfer objects (DTOs) definitions. It can be used to share contracts with client (eg. generate *TypeScript* definitions with *NSwag*)
+  - References: nothing
+- `Domain`: contains the domain model, the repository definitions and the interfaces of the domain services such as the `IRuleContributor` and `IMatchingStrategyExecutor` which are implemented in the `Application`
+  - References: `WriteModel`
+- `WriteModel`: contains the write model of the domain models, decoupling the domain entities with the database provider structure
+  - References: nothing
+- `EntityFrameworkCore`: contains the concrete implementations of the repositories, the database configuration and the migrations  
+
 ## Implementation
 
 I have extracted a few domain models:
@@ -61,7 +79,7 @@ or continue invoking the next rule (very similar concept to .NET Core middleware
 
 The component that actually executes a strategy invoking its rules implements the interface `IMatchingRuleStrategyExecutor`.
 
-```
+```csharp
 namespace Domain.Rules;
 
 public interface IMatchingRuleStrategyExecutor
