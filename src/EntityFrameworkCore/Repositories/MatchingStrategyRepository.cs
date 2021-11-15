@@ -121,6 +121,7 @@ namespace EntityFrameworkCore.Repositories
 
             var rulesData = await _applicationDbContext.MatchingRules
                 .Where(r => r.StrategyId == id)
+                .OrderBy(r => r.Order)
                 .ToListAsync();
 
             var rulesId = rulesData.Select(r => r.Id).ToList();
