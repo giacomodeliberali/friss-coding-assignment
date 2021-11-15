@@ -1,0 +1,394 @@
+{
+	"info": {
+		"_postman_id": "d55fd8f5-95c1-43cb-98de-8adb1d92f7a1",
+		"name": "Default",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CalculateProbability",
+			"item": [
+				{
+					"name": "Andrew 1 - Andrew2 (60%)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/people/probability-same-identity?firstPersonId=26a02c40-c303-447a-ab58-c0a98c1341ea&secondPersonId=a35ad06e-33fb-4201-bd38-e3da29445676&strategyId={{DefaultStrategyId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"people",
+								"probability-same-identity"
+							],
+							"query": [
+								{
+									"key": "firstPersonId",
+									"value": "26a02c40-c303-447a-ab58-c0a98c1341ea"
+								},
+								{
+									"key": "secondPersonId",
+									"value": "a35ad06e-33fb-4201-bd38-e3da29445676"
+								},
+								{
+									"key": "strategyId",
+									"value": "{{DefaultStrategyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Andrew - Patty (40%)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/people/probability-same-identity?firstPersonId=26a02c40-c303-447a-ab58-c0a98c1341ea&secondPersonId=7c922928-fe5f-417f-9017-d882b23be5ce&strategyId={{DefaultStrategyId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"people",
+								"probability-same-identity"
+							],
+							"query": [
+								{
+									"key": "firstPersonId",
+									"value": "26a02c40-c303-447a-ab58-c0a98c1341ea"
+								},
+								{
+									"key": "secondPersonId",
+									"value": "7c922928-fe5f-417f-9017-d882b23be5ce"
+								},
+								{
+									"key": "strategyId",
+									"value": "{{DefaultStrategyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Andrew 1 - A. Craw (95%)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/people/probability-same-identity?firstPersonId=26a02c40-c303-447a-ab58-c0a98c1341ea&secondPersonId=3215bd09-a18b-4f70-b1f8-24ad33c7bc1d&strategyId={{DefaultStrategyId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"people",
+								"probability-same-identity"
+							],
+							"query": [
+								{
+									"key": "firstPersonId",
+									"value": "26a02c40-c303-447a-ab58-c0a98c1341ea"
+								},
+								{
+									"key": "secondPersonId",
+									"value": "3215bd09-a18b-4f70-b1f8-24ad33c7bc1d"
+								},
+								{
+									"key": "strategyId",
+									"value": "{{DefaultStrategyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Andrew - Patty same Identifier  (100%)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/people/probability-same-identity?firstPersonId=aada3c0c-bbaf-490c-9078-8b8503a5982d&secondPersonId=3677d252-7dc6-4562-b9c4-ab1e19648530&strategyId={{DefaultStrategyId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"people",
+								"probability-same-identity"
+							],
+							"query": [
+								{
+									"key": "firstPersonId",
+									"value": "aada3c0c-bbaf-490c-9078-8b8503a5982d"
+								},
+								{
+									"key": "secondPersonId",
+									"value": "3677d252-7dc6-4562-b9c4-ab1e19648530"
+								},
+								{
+									"key": "strategyId",
+									"value": "{{DefaultStrategyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "People",
+			"item": [
+				{
+					"name": "Get All People",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/people",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Person",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Andy\",\n    \"lastName\": null,\n    \"birthDate\": \"1985-02-20\",\n    \"identificationNumber\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/people",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"people"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Strategies",
+			"item": [
+				{
+					"name": "Get All Strategies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const strategies = pm.response.json()",
+									"",
+									"if(strategies.length > 0){",
+									"    pm.collectionVariables.set('DefaultStrategyId', strategies[0].id) ",
+									"} else {",
+									"    pm.collectionVariables.set('DefaultStrategyId', null) ",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/strategies",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"strategies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Rules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/strategies/available-rules",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"strategies",
+								"available-rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Strategy By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const strategy = pm.response.json()",
+									"",
+									"pm.collectionVariables.set('DefaultStrategyId', strategy.id ?? null);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/strategies/{{DefaultStrategyId}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"strategies",
+								"{{DefaultStrategyId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Strategy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My strategy\",\n    \"description\": \"My strategy description\",\n    \"rules\": [\n        {\n            \"name\": \"IdentificationNumberEqualsMatchingRule\",\n            \"description\": \"This rule interrupts the pipeline and return 100% if business identifiers are known and equal.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.IdentificationNumberEqualsMatchingRule, Application\",\n            \"parameters\": []\n        },\n        {\n            \"name\": \"LastNameMatchingRule\",\n            \"description\": \"This rule add 40% if the last names match.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.LastNameMatchingRule, Application\",\n            \"parameters\": [\n                {\n                    \"name\": \"IncreaseProbabilityWhenEqualsLastNames\",\n                    \"value\": 0.3\n                }\n            ]\n        },\n        {\n            \"name\": \"FirstNameMatchingRule\",\n            \"description\": \"This rule add 20% if the first names match or 15% if they are similar.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.FirstNameMatchingRule, Application\",\n            \"parameters\": []\n        },\n        {\n            \"name\": \"BirthDateEqualsMatchingRule\",\n            \"description\": \"This rule add 40% if birth dates match or interrupt the pipeline if both birth dates are known and different.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.BirthDateEqualsMatchingRule, Application\",\n            \"parameters\": []\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/strategies",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"strategies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Strategy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"c14a94d9-7aa1-40d5-b0a3-aec45a0cb520\",\n    \"name\": \"Default\",\n    \"description\": \"The default strategy with the rules defined in the assignment\",\n    \"rules\": [\n        {\n            \"name\": \"IdentificationNumberEqualsMatchingRule\",\n            \"description\": \"This rule interrupts the pipeline and return 100% if business identifiers are known and equal.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.IdentificationNumberEqualsMatchingRule, Application\",\n            \"parameters\": []\n        },\n        {\n            \"name\": \"LastNameMatchingRule\",\n            \"description\": \"This rule add 40% if the last names match.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.LastNameMatchingRule, Application\",\n            \"parameters\": []\n        },\n        {\n            \"name\": \"FirstNameMatchingRule\",\n            \"description\": \"This rule add 20% if the first names match or 15% if they are similar.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.FirstNameMatchingRule, Application\",\n            \"parameters\": [\n                {\n                    \"name\": \"IncreaseProbabilityWhenEqualsFirstNames\",\n                    \"value\": 0.1\n                },\n                {\n                    \"name\": \"IncreaseProbabilityWhenSimilarFirstNames\",\n                    \"description\": 0.1\n                }\n            ]\n        },\n        {\n            \"name\": \"BirthDateEqualsMatchingRule\",\n            \"description\": \"This rule add 40% if birth dates match or interrupt the pipeline if both birth dates are known and different.\",\n            \"isEnabled\": true,\n            \"ruleTypeAssemblyQualifiedName\": \"Application.Rules.BirthDateEqualsMatchingRule, Application\",\n            \"parameters\": []\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/strategies/adb1fff7-08e7-4a12-82b3-898f4478d268",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"strategies",
+								"adb1fff7-08e7-4a12-82b3-898f4478d268"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Strategy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/strategies/adb1fff7-08e7-4a12-82b3-898f4478d268",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"strategies",
+								"adb1fff7-08e7-4a12-82b3-898f4478d268"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "DefaultStrategyId",
+			"value": ""
+		},
+		{
+			"key": "BaseUrl",
+			"value": "https://localhost:5001"
+		}
+	]
+}

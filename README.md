@@ -42,7 +42,7 @@ Each *MatchingRule* wraps indeed a concrete *Application* type that implements t
 ```csharp
 namespace Domain.Rules;
 
-public interface IRuleContributor
+public interface IMatchingRuleContributor
 {
     Task<ProbabilitySameIdentity> MatchAsync(
       MatchingRule rule,
@@ -81,6 +81,90 @@ registered into the DI container and made visible to clients.
 
 Concrete rule types are serialized inside the database, so any refactoring that will change their name or namespace introduce a breaking change (and requires a db migration).
 
+### MatchingRule configuration
+
+MatchingRules contains domain logic, thus they are considered domain services. This means that a client can not create
+its own rule on demand, but it can only use existing rules and can possibly tune rule's parameters to alter its behaviour.
+
+What a client can do is:
+- Create/update a strategy choosing the list of rules that it wants and their execution order
+- Create/update a strategy disabling one or more of its rules
+- Create/update a strategy providing a list of custom parameters for each rule
+  - Every rule has its own parameters that a client can manipulate. If unspecified each rule will use default values
+
+Example: create a strategy specifying a rule parameter 
+```json
+{
+    "name": "My custom strategy",
+    "description": "A strategy that has only a single rule on the last name that return 80% on match",
+    "rules": [
+        {
+            "name": "LastNameMatchingMatchingRule",
+            "description": "This rule add 80% if the last names match",
+            "isEnabled": true,
+            "ruleTypeAssemblyQualifiedName": "Application.Rules.LastNameMatchingMatchingRule, Application",
+            "parameters": [
+                {
+                    "name": "IncreaseProbabilityWhenEqualsLastNames",
+                    "value": 0.8
+                }
+            ]
+        }
+    ]
+}
+```
+
+The list of available rules and their parameters can be seen by client by invoking the endpoint `GET api/strategies/available-rules`. An example response will be
+```json
+[
+    {
+        "assemblyQualifiedName": "Application.Rules.FirstNameMatchingMatchingRule, Application",
+        "description": "This rule add 20% if the first names match or 15% if they are similar.",
+        "parameters": [
+            {
+                "name": "IncreaseProbabilityWhenEqualsFirstNames",
+                "description": "The probability to add for a first name exact match."
+            },
+            {
+                "name": "IncreaseProbabilityWhenSimilarFirstNames",
+                "description": "The probability to add for a first name similarity match."
+            }
+        ]
+    }
+]
+```
+
+Every rule have to specify the list of parameters it allows as configuration by using the `RuleParameter` attribute.
+The description of the parameter will be sent to clients for documentation purposes as well as the class XML docs comments.
+
+Example: 
+
+```csharp
+/// <summary>
+/// This rule add 20% if the first names match or 15% if they are similar.
+/// </summary>
+[RuleParameter(IncreaseProbabilityWhenEqualsFirstNames, "The probability to add for a first name exact match.")]
+[RuleParameter(IncreaseProbabilityWhenSimilarFirstNames, "The probability to add for a first name similarity match.")]
+public class FirstNameMatchingMatchingRule : IMatchingRuleContributor
+{
+  // ...
+ }
+```
+
+### Logs
+
+Application logs are written to console and to file (`src/Web.Host/Logs/logs.txt`) using Serilog. All
+handled exception will be logged as *Warning*, while unhandled exceptions will be logged as *Error*.
+
+### Caching
+
+Requests caching is implemented with an in-memory structure (`IMemoryCache`), and thus it gets cleared at every app restart.
+It also doesn't support scaling as it is not distributed (eg. *Redis*). Requests that are cached at the moment are:
+- `api/strategies/available-rules`: the list of available *MatchingRule*s never change after app start, so it is cached indefinitely
+- `api/people/probability-same-identity`: the probability never changes until either a person or the strategy are update/deleted. The request is cached (sorting the ids) and removed once the strategy changes (people don't have a full CRUD yet). 
+
+The default interface `IMemoryCache` is wrapped in a custom `ICustomMemoryCache` that just wraps the default implementation `MemoryCache` and exposes the list of keys to allow a batch deletion.
+
 ## Setup
 
 This project requires .NET 5. 
@@ -92,7 +176,6 @@ To build the project move in the root directory and run:
 ```
 dotnet build
 ```
-
 
 ### Tests
 
@@ -110,12 +193,23 @@ The projects uses a SQL Lite db on a local file. To initialize the database move
 dotnet ef database update --project src/EntityFrameworkCore --startup-project src/Web.Host --verbose
 ```
 
+This will create a local file named `FrissCodingAssignment.db` and it will seed the given rules, strategy and people.
+
 ### Run
 
-Once built you can run the project by running the command (in the `src/Web.Host`):
+Once the database has been created you can run the project by typing the command (in the root folder):
 
 ```
-dotnet run
+dotnet run --project src/Web.Host
 ```
 
 You should be able to see swagger at [https://localhost:5001/swagger](https://localhost:5001/swagger).
+
+# Postman
+
+To quickly run the project to see how it works I included a Postman collection with the needed requests to simulate the tests written in the assignment. 
+You can find the [collection](./Default.postman_collection.json) inside the root folder (`Default.postman_collection.json`). You can [import it directly into postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) to try it out.
+
+The workflow to test the rules in the assignment is:
+- Call the `Get All Strategies` that should return the single previously seeded strategy with rules (this request will populate the collection variable `DefaultStrategyId` used in subsequent requests)
+- Call the different endpoints under the folder `CalculateProbability` that represent the examples provided in the assignment (it uses the previously seeded people as well)
