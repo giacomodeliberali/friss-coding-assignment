@@ -226,7 +226,7 @@ The default interface `IMemoryCache` is wrapped in a custom `ICustomMemoryCache`
 
 ## Setup
 
-This project requires .NET 5. 
+This project requires .NET 6. 
 
 ### Build
 
@@ -272,3 +272,12 @@ You can find the [collection](./Default.postman_collection.json) inside the root
 The workflow to test the rules in the assignment is:
 - Call the `Get All Strategies` that should return the single previously seeded strategy with rules (this request will populate the collection variable `DefaultStrategyId` used in subsequent requests)
 - Call the different endpoints under the folder `CalculateProbability` that represent the examples provided in the assignment (it uses the previously seeded people as well)
+
+# Docker
+
+To run the app in docker simply run:
+
+```
+docker build -t gdl-friss-assignment . 
+docker run -p 5001:80 -e "ASPNETCORE_ENVIRONMENT=Development" gdl-friss-assignment
+```
